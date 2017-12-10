@@ -1,3 +1,7 @@
 .App {
   text-align: center;
 }
+
+td {
+  border: 1px black solid
+}
