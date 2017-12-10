@@ -4,14 +4,16 @@ import BoardRow from './BoardRow'
 const ChessBoard = (props) => {
     return(
         <table>
-            <BoardRow />
-            <BoardRow />
-            <BoardRow />
-            <BoardRow />
-            <BoardRow />
-            <BoardRow />
-            <BoardRow />
-            <BoardRow />
+            <tbody>
+                <BoardRow />
+                <BoardRow />
+                <BoardRow />
+                <BoardRow />
+                <BoardRow />
+                <BoardRow />
+                <BoardRow />
+                <BoardRow />
+            </tbody>
         </table>
     )
 }

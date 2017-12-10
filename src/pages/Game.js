@@ -1,12 +1,11 @@
-import React, {Component} from 'react'
-import {Link} from 'react-router-dom'
+import React from 'react'
 import ChessBoard from '../components/ChessBoard'
 
 const Game = (props) => {
     return(
         <div className='row'>
             <div className='col'>                    
-            <div id="board" class="board">
+            <div id="board" className="board">
                 chessboard here:
                 <ChessBoard/>
             </div>
