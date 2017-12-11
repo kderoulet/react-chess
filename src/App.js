@@ -44,6 +44,10 @@ class App extends Component {
           break
           case "4": this.blackBishopMove(e.target)
           break
+          case "5": this.blackKnightMove(e.target)
+          break
+          case "6": this.whiteKnightMove(e.target)
+          break
           case "7": this.whiteRookMove(e.target)
           break
           case "8": this.blackRookMove(e.target)
@@ -188,6 +192,56 @@ class App extends Component {
     }    
   }
 
+  blackKnightMove(piece) {
+    this.scanKnightMove(piece, 0)
+  }
+
+  whiteKnightMove(piece) {
+    this.scanKnightMove(piece, 1)
+  }
+
+  scanKnightMove(piece, remainder) {
+      let knightRank = parseInt(piece.getAttribute("dataRank"), 10)
+      let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+      if (this.selectArray(knightRank+2)) {
+        let upperRank = this.selectArray(knightRank+2)
+        if (upperRank[currentIndex+1] === 0 || upperRank[currentIndex+1] % 2 === remainder) {
+          upperRank[currentIndex+1] += 100
+        }
+        if (upperRank[currentIndex-1] === 0 || upperRank[currentIndex-1] % 2 === remainder) {
+          upperRank[currentIndex-1] += 100
+        }
+      }
+      if (this.selectArray(knightRank+1)) {
+        let upperRank = this.selectArray(knightRank+1)
+        if (upperRank[currentIndex+2] === 0 || upperRank[currentIndex+2] % 2 === remainder) {
+          upperRank[currentIndex+2] += 100
+        }
+        if (upperRank[currentIndex-2] === 0 || upperRank[currentIndex-2] % 2 === remainder) {
+          upperRank[currentIndex-2] += 100
+        }
+      }
+      if (this.selectArray(knightRank-1)) {
+        let lowerRank = this.selectArray(knightRank-1)
+        if (lowerRank[currentIndex+2] === 0 || lowerRank[currentIndex+2] % 2 === remainder) {
+          lowerRank[currentIndex+2] += 100
+        }
+        if (lowerRank[currentIndex-2] === 0 || lowerRank[currentIndex-2] % 2 === remainder) {
+          lowerRank[currentIndex-2] += 100      
+        }
+      }
+      if (this.selectArray(knightRank-2)) {
+        let lowerRank = this.selectArray(knightRank-2)
+        if (lowerRank[currentIndex+1] === 0 || lowerRank[currentIndex+1] % 2 === remainder) {
+          lowerRank[currentIndex+1] += 100
+        }
+        if (lowerRank[currentIndex-1] === 0 || lowerRank[currentIndex-1] % 2 === remainder) {
+          lowerRank[currentIndex-1] += 100
+        }
+      }
+    }
+  
+
   blackRookMove(piece) {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
@@ -324,7 +378,7 @@ class App extends Component {
       }
     }
   }
-  
+
   allowMovement(e) {
     let array1 = this.selectArray(parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10))
     let array2 = this.selectArray(parseInt(e.target.getAttribute("dataRank"), 10))
