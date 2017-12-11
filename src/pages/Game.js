@@ -7,7 +7,17 @@ const Game = (props) => {
             <div className='col'>                    
             <div id="board" className="board">
                 chessboard here:
-                <ChessBoard/>
+                <ChessBoard
+                    handleMovement={props.handleMovement}
+                    rankEight={props.rankEight}
+                    rankSeven={props.rankSeven}
+                    rankSix={props.rankSix}
+                    rankFive={props.rankFive}
+                    rankFour={props.rankFour}
+                    rankThree={props.rankThree}
+                    rankTwo={props.rankTwo}
+                    rankOne={props.rankOne}
+                />
             </div>
             </div>
             <div className='col'>
