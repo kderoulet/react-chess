@@ -42,9 +42,9 @@ class App extends Component {
           break
           default: console.log('default')
           break
-          case "3": this.bishopMove(e.target)
+          case "3": this.whiteBishopMove(e.target)
           break
-          case "4": this.bishopMove(e.target)
+          case "4": this.blackBishopMove(e.target)
           break
         }
       }
@@ -98,7 +98,84 @@ class App extends Component {
     }
   }
 
+  blackBishopMove(piece) {
+    let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    this.scanDLBishopMovement(currentRank, currentIndex, 1)
+    this.scanDRBishopMovement(currentRank, currentIndex, 1)
+    this.scanULBishopMovement(currentRank, currentIndex, 1)
+    this.scanURBishopMovement(currentRank, currentIndex, 1)
+  }
 
+  whiteBishopMove(piece) {
+    let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    this.scanDLBishopMovement(currentRank, currentIndex, 0)
+    this.scanDRBishopMovement(currentRank, currentIndex, 0)
+    this.scanULBishopMovement(currentRank, currentIndex, 0)
+    this.scanURBishopMovement(currentRank, currentIndex, 0)
+  }
+
+  scanDLBishopMovement(rank, idx, remainder) {
+    if (this.selectArray(rank-1)) {
+      let nextRank = this.selectArray(rank-1)
+      if (nextRank[idx-1] === 0) {
+        nextRank[idx-1] += 100
+        let nRank = rank-1
+        let nIdx = idx-1
+        this.scanDLBishopMovement(nRank, nIdx, remainder)
+      }
+      else if (nextRank[idx-1] % 2 === remainder) {
+        nextRank[idx-1] += 100
+      }
+    }
+  }
+
+  scanDRBishopMovement(rank, idx, remainder) {
+    if (this.selectArray(rank-1)) {
+      let nextRank = this.selectArray(rank-1)
+      if (nextRank[idx+1] === 0) {
+        nextRank[idx+1] += 100
+        let nRank = rank-1
+        let nIdx = idx+1
+        this.scanDRBishopMovement(nRank, nIdx, remainder)
+      }
+      else if (nextRank[idx+1] % 2 === remainder) {
+        nextRank[idx+1] += 100
+
+      }      
+    }    
+  }
+
+  scanULBishopMovement(rank, idx, remainder) {
+    if (this.selectArray(rank+1)) {
+      let nextRank = this.selectArray(rank+1)
+      if (nextRank[idx-1] === 0) {
+        nextRank[idx-1] += 100
+        let nRank = rank+1
+        let nIdx = idx-1
+        this.scanULBishopMovement(nRank, nIdx, remainder)
+      }
+      else if (nextRank[idx-1] % 2 === remainder) {
+        nextRank[idx-1] += 100
+      }
+    }
+  }
+
+  scanURBishopMovement(rank, idx, remainder) {
+    if (this.selectArray(rank+1)) {
+      let nextRank = this.selectArray(rank+1)
+      if (nextRank[idx+1] === 0) {
+        nextRank[idx+1] += 100
+        let nRank = rank+1
+        let nIdx = idx+1
+        this.scanURBishopMovement(nRank, nIdx, remainder)
+      }
+      else if (nextRank[idx+1] % 2 === remainder) {
+        nextRank[idx+1] += 100
+      }   
+    }    
+  }
 
   allowMovement(e) {
     let array1 = this.selectArray(parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10))
@@ -130,8 +207,7 @@ class App extends Component {
       case 6: return this.state.rankSix
       case 7: return this.state.rankSeven
       case 8: return this.state.rankEight
-      default: console.log('default')
-      break
+      default: return false
     }
   }
 // I want to be able to grab the row of the selected pieces
