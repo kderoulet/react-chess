@@ -21,28 +21,106 @@ class App extends Component {
         rankFour: [0, 0, 0, 0, 0, 0, 0, 0],
         rankThree: [0, 0, 0, 0, 0, 0, 0, 0],
         rankTwo: [1, 1, 1, 1, 1, 1, 1, 1],
-        rankOne: [7, 5, 4, 9, 11, 3, 5, 7],
+        rankOne: [7, 5, 3, 9, 11, 3, 5, 7],
         selectedPiece: false
     }
   }
 
   handleMovement = (e) => {
       if (this.state.selectedPiece) {
-        let array1 = this.selectArray(parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10))
-        let array2 = this.selectArray(parseInt(e.target.getAttribute("dataRank"), 10))
-        console.log(array1)
-        console.log(array2)
-        array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
-        array2.splice(e.target.getAttribute("dataIndexnumber"), 1, this.state.selectedPiece.getAttribute("dataValue"))
-        this.setState({selectedPiece: false})
+        if (parseInt(e.target.getAttribute("dataValue"), 10) < 100) {
+          this.finishMove();          
+        }
+        else this.allowMovement(e)
       }
       else {
         this.setState({selectedPiece: e.target})
+        switch (e.target.getAttribute("dataValue")) {
+          case "1": this.whitePawnMove(e.target)
+          break
+          case "2": this.blackPawnMove(e.target)
+          break
+          default: console.log('default')
+          break
+          case "3": this.bishopMove(e.target)
+          break
+          case "4": this.bishopMove(e.target)
+          break
+        }
       }
   }
 
+  whitePawnMove(piece) {
+    let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let array1 = this.selectArray(currentRank+1)
+    let threatened1 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1]
+    let threatened2 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1]
+    if (threatened1 > 0 && threatened1 % 2 === 0) {
+      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1] += 100
+    }
+    if (threatened2 > 0 && threatened2 % 2 === 0) {
+      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1] += 100
+    }
+    if (piece.getAttribute("dataRank") === "2") {
+      let array2 = this.selectArray(currentRank+2)          
+      array1[piece.getAttribute("dataIndexnumber")] += 100;
+      array2[piece.getAttribute("dataIndexNumber")] += 100;
+    }
+    else {
+      let moveSquare = array1[piece.getAttribute("dataIndexnumber")];      
+        if (moveSquare === 0) {
+          array1[piece.getAttribute("dataIndexnumber")] = 100;
+        }
+    }
+  }
+
+  blackPawnMove(piece) {
+    let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let array1 = this.selectArray(currentRank-1)
+    let threatened1 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1]
+    let threatened2 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1]
+    if (threatened1 > 0 && threatened1 % 2 === 1) {
+      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1] += 100
+    }
+    if (threatened2 > 0 && threatened2 % 2 === 1) {
+      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1] += 100
+    }
+    if (piece.getAttribute("dataRank") === "7") {
+      let array2 = this.selectArray(currentRank-2)          
+      array1[piece.getAttribute("dataIndexnumber")] += 100;
+      array2[piece.getAttribute("dataIndexNumber")] += 100;
+    }
+    else {
+      let moveSquare = array1[piece.getAttribute("dataIndexnumber")];      
+        if (moveSquare === 0) {
+          array1[piece.getAttribute("dataIndexnumber")] = 100;
+        }
+    }
+  }
+
+
+
+  allowMovement(e) {
+    let array1 = this.selectArray(parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10))
+    let array2 = this.selectArray(parseInt(e.target.getAttribute("dataRank"), 10))
+    array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
+    array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
+    this.finishMove()
+  }
+
+  finishMove = () => {
+    this.state.rankEight.forEach((num, idx) => {if (num >= 100) this.state.rankEight.splice(idx, 1, num-100)})
+    this.state.rankSeven.forEach((num, idx) => {if (num >= 100) this.state.rankSeven.splice(idx, 1, num-100)})
+    this.state.rankSix.forEach((num, idx) => {if (num >= 100) this.state.rankSix.splice(idx, 1, num-100)})
+    this.state.rankFive.forEach((num, idx) => {if (num >= 100) this.state.rankFive.splice(idx, 1, num-100)})
+    this.state.rankFour.forEach((num, idx) => {if (num >= 100) this.state.rankFour.splice(idx, 1, num-100)})
+    this.state.rankThree.forEach((num, idx) => {if (num >= 100) this.state.rankThree.splice(idx, 1, num-100)})
+    this.state.rankTwo.forEach((num, idx) => {if (num >= 100) this.state.rankTwo.splice(idx, 1, num-100)})
+    this.state.rankOne.forEach((num, idx) => {if (num >= 100) this.state.rankOne.splice(idx, 1, num-100)})
+    this.setState({selectedPiece: false})
+  }
+
   selectArray(input) {
-    console.log(input)
     switch (input) {
       case 1: return this.state.rankOne
       case 2: return this.state.rankTwo

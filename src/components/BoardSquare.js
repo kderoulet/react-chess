@@ -7,6 +7,7 @@ const BoardSquare = (props) => {
             datavalue={props.squareVal}
             datarank={props.rank}
             dataindexnumber={props.index}
+            datathreatened="0"
             style={{border: "1px solid black", padding: "10px"}}
             >
             {props.squareVal}
