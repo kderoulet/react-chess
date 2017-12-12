@@ -22,7 +22,8 @@ class App extends Component {
         rankThree: [0, 0, 0, 0, 0, 0, 0, 0],
         rankTwo: [1, 1, 1, 1, 1, 1, 1, 1],
         rankOne: [7, 5, 3, 9, 11, 3, 5, 7],
-        selectedPiece: false
+        selectedPiece: false,
+        turnCounter: 1
     }
   }
 
@@ -102,7 +103,7 @@ class App extends Component {
       array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1] += 100
     }
     if (piece.getAttribute("dataRank") === "7") {
-      let array2 = this.selectArray(currentRank-2)          
+      let array2 = this.selectArray(currentRank-2)       
       array1[piece.getAttribute("dataIndexnumber")] += 100;
       array2[piece.getAttribute("dataIndexNumber")] += 100;
     }
@@ -676,6 +677,8 @@ class App extends Component {
     this.state.rankTwo.forEach((num, idx) => {if (num >= 100) this.state.rankTwo.splice(idx, 1, num-100)})
     this.state.rankOne.forEach((num, idx) => {if (num >= 100) this.state.rankOne.splice(idx, 1, num-100)})
     this.setState({selectedPiece: false})
+    this.state.turnCounter === 1 ? this.setState({turnCounter: 2}) : this.setState({turnCounter: 1}); 
+    console.log(this.state.turnCounter)
   }
 
   selectArray(input) {
