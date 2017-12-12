@@ -95,10 +95,21 @@ class App extends Component {
   }
 
   whitePawnMove(piece) {
-    let numMoves = 0
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
     let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
+    this.scanWhitePawn(pieceValue, currentRank, currentIndex)
+  }
+
+  blackPawnMove(piece) {
+    let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
+    this.scanBlackPawn(pieceValue, currentRank, currentIndex)
+  }
+
+  scanWhitePawn(pieceValue, currentRank, currentIndex) {
+    let counter = 0
     let rankArray = this.selectArray(currentRank)    
     let nextRank = this.selectArray(currentRank+1)
     let threatened1 = nextRank[currentIndex-1]
@@ -106,38 +117,35 @@ class App extends Component {
     if (threatened1 > 0 && threatened1 % 2 === 0) {
       if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex-1)) {
         nextRank[currentIndex-1] += 100
-        numMoves++
+        counter++
       }
     }
     if (threatened2 > 0 && threatened2 % 2 === 0) {
       if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
         nextRank[currentIndex+1] += 100
-        numMoves++        
+        counter++        
       }
     }
     if (nextRank[currentIndex] === 0) {
       if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex)) {
         nextRank[currentIndex] += 100
-        numMoves++
+        counter++
       }
       if (currentRank === 2) {
         let doubleRank = this.selectArray(4)
         if (this.selectArray(4)[currentIndex] === 0) {
           if (this.checkMove(pieceValue, rankArray, currentIndex, doubleRank, currentIndex)) {
             this.selectArray(4)[currentIndex] += 100
-            numMoves++
+            counter++
           }
         }
       } 
     }
-    if (numMoves === 0) this.resolveMove();
+    return counter > 0 ? true : false
   }
 
-  blackPawnMove(piece) {
-    let numMoves = 0
-    let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
-    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
-    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
+  scanBlackPawn(pieceValue, currentRank, currentIndex) {
+    let counter = 0
     let rankArray = this.selectArray(currentRank)    
     let nextRank = this.selectArray(currentRank-1)
     let threatened1 = nextRank[currentIndex-1]
@@ -145,31 +153,31 @@ class App extends Component {
     if (threatened1 > 0 && threatened1 % 2 === 1) {
       if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex-1)) {
         nextRank[currentIndex-1] += 100
-        numMoves++
+        counter++
       }
     }
     if (threatened2 > 0 && threatened2 % 2 === 1) {
       if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
         nextRank[currentIndex+1] += 100
-        numMoves++        
+        counter++        
       }
     }
     if (nextRank[currentIndex] === 0) {
       if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex)) {
         nextRank[currentIndex] += 100
-        numMoves++
+        counter++
       }
       if (currentRank === 7) {
         let doubleRank = this.selectArray(5)
         if (doubleRank[currentIndex] === 0) {
           if (this.checkMove(pieceValue, rankArray, currentIndex, doubleRank, currentIndex)) {
             this.selectArray(5)[currentIndex] += 100
-            numMoves++  
+            counter++  
           }
         }
       } 
     }
-    if (numMoves === 0) this.resolveMove();
+    return counter > 0 ? true : false
   }
 
   blackBishopMove(piece) {
@@ -193,154 +201,183 @@ class App extends Component {
   }
 
   scanDLBishopMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank-j)
       if (nextRank[idx-j] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx-j)) {
-          nextRank[idx-j] += 100          
+          nextRank[idx-j] += 100
+          counter++          
         }
       } 
       else if (nextRank[idx-j] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx-j)) {
           nextRank[idx-j] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
   scanDRBishopMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank-j)
       if (nextRank[idx+j] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx+j)) {
-          nextRank[idx+j] += 100          
+          nextRank[idx+j] += 100
+          counter++          
         }
       } 
       else if (nextRank[idx+j] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx+j)) {
           nextRank[idx+j] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
   scanULBishopMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank+j)
       if (nextRank[idx-j] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx-j)) {
-          nextRank[idx-j] += 100          
+          nextRank[idx-j] += 100
+          counter++          
         }
       } 
       else if (nextRank[idx-j] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx-j)) {
           nextRank[idx-j] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
   scanURBishopMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank+j)
       if (nextRank[idx+j] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx+j)) {
-          nextRank[idx+j] += 100          
+          nextRank[idx+j] += 100
+          counter++        
         }
       } 
       else if (nextRank[idx+j] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx+j)) {
           nextRank[idx+j] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
 
 
 
   blackKnightMove(piece) {
-    this.scanKnightMove(piece, 0)
+    let knightRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
+    this.scanKnightMove(pieceValue, knightRank, currentIndex, 0)    
   }
 
   whiteKnightMove(piece) {
-    this.scanKnightMove(piece, 1)
+    let knightRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
+    this.scanKnightMove(pieceValue, knightRank, currentIndex, 1)    
   }
 
-  scanKnightMove(piece, remainder) {
-      let knightRank = parseInt(piece.getAttribute("dataRank"), 10)
-      let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
-      let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
-      let currentRank = this.selectArray(knightRank) 
-      if (this.selectArray(knightRank+2)) {
-        let upperRank = this.selectArray(knightRank+2)
-        if (upperRank[currentIndex+1] === 0 || upperRank[currentIndex+1] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex+1)) {
-            upperRank[currentIndex+1] += 100
-          }
-        }
-        if (upperRank[currentIndex-1] === 0 || upperRank[currentIndex-1] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex-1)) {
-            upperRank[currentIndex-1] += 100
-          }
+  scanKnightMove(pieceValue, knightRank, currentIndex, remainder) {
+    let counter = 0
+    let currentRank = this.selectArray(knightRank) 
+    if (this.selectArray(knightRank+2)) {
+      let upperRank = this.selectArray(knightRank+2)
+      if (upperRank[currentIndex+1] === 0 || upperRank[currentIndex+1] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex+1)) {
+          upperRank[currentIndex+1] += 100
+          counter++
         }
       }
-      if (this.selectArray(knightRank+1)) {
-        let upperRank = this.selectArray(knightRank+1)
-        if (upperRank[currentIndex+2] === 0 || upperRank[currentIndex+2] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex+2)) {
-            upperRank[currentIndex+2] += 100
-          }
-        }
-        if (upperRank[currentIndex-2] === 0 || upperRank[currentIndex-2] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex-2)) {
-            upperRank[currentIndex-2] += 100
-          }
-        }
-      }
-      if (this.selectArray(knightRank-1)) {
-        let lowerRank = this.selectArray(knightRank-1)
-        if (lowerRank[currentIndex+2] === 0 || lowerRank[currentIndex+2] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex+2)) {
-            lowerRank[currentIndex+2] += 100
-          }
-        }
-        if (lowerRank[currentIndex-2] === 0 || lowerRank[currentIndex-2] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex-2)) {
-            lowerRank[currentIndex-2] += 100      
-          }
-        }
-      }
-      if (this.selectArray(knightRank-2)) {
-        let lowerRank = this.selectArray(knightRank-2)
-        if (lowerRank[currentIndex+1] === 0 || lowerRank[currentIndex+1] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex+1)) {
-            lowerRank[currentIndex+1] += 100
-          }
-        }
-        if (lowerRank[currentIndex-1] === 0 || lowerRank[currentIndex-1] % 2 === remainder) {
-          if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex-1)) {
-          lowerRank[currentIndex-1] += 100
-          }
+      if (upperRank[currentIndex-1] === 0 || upperRank[currentIndex-1] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex-1)) {
+          upperRank[currentIndex-1] += 100
+          counter++
         }
       }
     }
+    if (this.selectArray(knightRank+1)) {
+      let upperRank = this.selectArray(knightRank+1)
+      if (upperRank[currentIndex+2] === 0 || upperRank[currentIndex+2] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex+2)) {
+          upperRank[currentIndex+2] += 100
+          counter++
+        }
+      }
+      if (upperRank[currentIndex-2] === 0 || upperRank[currentIndex-2] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex-2)) {
+          upperRank[currentIndex-2] += 100
+          counter++
+        }
+      }
+    }
+    if (this.selectArray(knightRank-1)) {
+      let lowerRank = this.selectArray(knightRank-1)
+      if (lowerRank[currentIndex+2] === 0 || lowerRank[currentIndex+2] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex+2)) {
+          lowerRank[currentIndex+2] += 100
+          counter++
+        }
+      }
+      if (lowerRank[currentIndex-2] === 0 || lowerRank[currentIndex-2] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex-2)) {
+          lowerRank[currentIndex-2] += 100 
+          counter++     
+        }
+      }
+    }
+    if (this.selectArray(knightRank-2)) {
+      let lowerRank = this.selectArray(knightRank-2)
+      if (lowerRank[currentIndex+1] === 0 || lowerRank[currentIndex+1] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex+1)) {
+          lowerRank[currentIndex+1] += 100
+          counter++
+        }
+      }
+      if (lowerRank[currentIndex-1] === 0 || lowerRank[currentIndex-1] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex-1)) {
+        lowerRank[currentIndex-1] += 100
+        counter++
+        }
+      }
+    }
+    return counter > 0 ? true : false
+  }
 
   blackRookMove(piece) {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
@@ -362,83 +399,99 @@ class App extends Component {
   }
 
   scanURookMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank+j)
       if (nextRank[idx] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx)) {
-          nextRank[idx] += 100          
+          nextRank[idx] += 100
+          counter++          
         }
       } 
       else if (nextRank[idx] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx)) {
           nextRank[idx] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
   scanDRookMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank-j)
       if (nextRank[idx] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx)) {
-          nextRank[idx] += 100          
+          nextRank[idx] += 100
+          counter++          
         }
       } 
       else if (nextRank[idx] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx)) {
           nextRank[idx] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
   scanLRookMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank)
       if (nextRank[idx-j] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx-j)) {
-          nextRank[idx-j] += 100          
+          nextRank[idx-j] += 100
+          counter++          
         }
       } 
       else if (nextRank[idx-j] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx-j)) {
           nextRank[idx-j] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
   scanRRookMove(value, rank, idx, remainder) {
+    let counter = 0
     let currentRank = this.selectArray(rank)
     let nextRank = []
     for (let j = 1; j <= 8; j++) {
       nextRank = this.selectArray(rank)
       if (nextRank[idx+j] === 0) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx+j)) {
-          nextRank[idx+j] += 100          
+          nextRank[idx+j] += 100    
+          counter++      
         }
       } 
       else if (nextRank[idx+j] % 2 === remainder) {
         if (this.checkMove(value, currentRank, idx, nextRank, idx+j)) {
           nextRank[idx+j] += 100;
+          counter++
           j = 9;
         }
       }
       else j = 9;
     }
+    return counter > 0 ? true : false
   }
 
   
@@ -472,43 +525,52 @@ class App extends Component {
   }
 
   whiteKingMove(piece) {
-    this.scanKingMove(piece, 0)
+    let kingRank = parseInt(piece.getAttribute("dataRank"), 10)
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)                
+    this.scanKingMove(pieceValue, kingRank, currentIndex, 0)
   }
 
   blackKingMove(piece) {
-    this.scanKingMove(piece, 1)
-  }
-
-  scanKingMove(piece, remainder) {
     let kingRank = parseInt(piece.getAttribute("dataRank"), 10)
-    let currentRank = this.selectArray(kingRank)
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
     let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)                
+    this.scanKingMove(pieceValue, kingRank, currentIndex, 1)
+  }
+
+  scanKingMove(pieceValue, kingRank, currentIndex, remainder) {
+    let counter = 0
+    let currentRank = this.selectArray(kingRank)
     if (currentRank[currentIndex-1] === 0 || currentRank[currentIndex-1] % 2 === remainder) {
       if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex-1)) {
-      currentRank[currentIndex-1] += 100
+        currentRank[currentIndex-1] += 100
+        counter++
       }
     }
     if (currentRank[currentIndex+1] === 0 || currentRank[currentIndex+1] % 2 === remainder) {
       if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex+1)) {        
-      currentRank[currentIndex+1] += 100
+        currentRank[currentIndex+1] += 100
+        counter++
       }
     }
     if (this.selectArray(kingRank+1)) {
       let upperRank = this.selectArray(kingRank+1)      
       if (upperRank[currentIndex] === 0 || upperRank[currentIndex] % 2 === remainder) {
         if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex)) {          
-        upperRank[currentIndex] += 100
+          upperRank[currentIndex] += 100
+          counter++
         }
       }
       if (upperRank[currentIndex+1] === 0 || upperRank[currentIndex+1] % 2 === remainder) {
         if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex+1)) {          
-        upperRank[currentIndex+1] += 100
+          upperRank[currentIndex+1] += 100
+          counter++
         }
       }
       if (upperRank[currentIndex-1] === 0 || upperRank[currentIndex-1] % 2 === remainder) {
         if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex-1)) {          
-        upperRank[currentIndex-1] += 100
+          upperRank[currentIndex-1] += 100
+          counter++
         }
       }
     }
@@ -517,19 +579,23 @@ class App extends Component {
       if (lowerRank[currentIndex] === 0 || lowerRank[currentIndex] % 2 === remainder) {
         if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex)) {          
           lowerRank[currentIndex] += 100
+          counter++
         }
       }
       if (lowerRank[currentIndex+1] === 0 || lowerRank[currentIndex+1] % 2 === remainder) {
         if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex+1)) {          
           lowerRank[currentIndex+1] += 100
+          counter++
         }
       }
       if (lowerRank[currentIndex-1] === 0 || lowerRank[currentIndex-1] % 2 === remainder) {
         if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex-1)) {          
-        lowerRank[currentIndex-1] += 100      
+          lowerRank[currentIndex-1] += 100
+          counter++     
         }
       }
     }
+    return counter > 0 ? true : false
   }
 
   findWhiteKing() {
@@ -754,8 +820,18 @@ class App extends Component {
     array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
     this.resolveMove()
     this.state.turnCounter === 1 ? this.setState({turnCounter: 0}) : this.setState({turnCounter: 1}); 
-    this.findWhiteKing();
-    this.findBlackKing();
+    if (this.findWhiteKing()) {
+      if (this.searchWhiteMoves()) {
+        console.log("WHITE IS CHECKMATED")
+      }
+      else console.log("white is in check")
+    }
+    if (this.findBlackKing()) {
+      if(this.searchBlackMoves()) {
+        console.log("BLACK IS CHECKMATED")
+      }
+      else console.log("black is in check")
+    }
   }
 
   resolveMove = () => {
@@ -768,6 +844,690 @@ class App extends Component {
     this.state.rankTwo.forEach((num, idx) => {if (num >= 100) this.state.rankTwo.splice(idx, 1, num-100)})
     this.state.rankOne.forEach((num, idx) => {if (num >= 100) this.state.rankOne.splice(idx, 1, num-100)})
     this.setState({selectedPiece: false})
+  }
+
+  searchWhiteMoves() {
+  let counter = 0
+  this.state.rankEight.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 8, idx)) counter++
+        this.resolveMove()                
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 8, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 8, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 8, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 8, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 8, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 7:
+        if (this.scanURookMove(val, 8, idx, 0)) counter++
+        if (this.scanDRookMove(val, 8, idx, 0)) counter++
+        if (this.scanLRookMove(val, 8, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 8, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 9: 
+        if (this.scanURookMove(val, 8, idx, 0)) counter++
+        if (this.scanDRookMove(val, 8, idx, 0)) counter++
+        if (this.scanLRookMove(val, 8, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 8, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 8, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 8, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 8, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 8, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 11: 
+        if (this.scanKingMove(val, 8, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankSeven.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 7, idx)) counter++
+        this.resolveMove()
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 7, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 7, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 7, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 7, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 7, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 7:
+        if (this.scanURookMove(val, 7, idx, 0)) counter++
+        if (this.scanDRookMove(val, 7, idx, 0)) counter++
+        if (this.scanLRookMove(val, 7, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 7, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 9: 
+        if (this.scanURookMove(val, 7, idx, 0)) counter++
+        if (this.scanDRookMove(val, 7, idx, 0)) counter++
+        if (this.scanLRookMove(val, 7, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 7, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 7, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 7, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 7, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 7, idx, 0)) counter++
+        this.resolveMove()
+      break
+        case 11: 
+        if (this.scanKingMove(val, 7, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankSix.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 6, idx)) counter++
+        this.resolveMove()
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 6, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 6, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 6, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 6, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 6, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 7:
+        if (this.scanURookMove(val, 6, idx, 0)) counter++
+        if (this.scanDRookMove(val, 6, idx, 0)) counter++
+        if (this.scanLRookMove(val, 6, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 6, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 9: 
+        if (this.scanURookMove(val, 6, idx, 0)) counter++
+        if (this.scanDRookMove(val, 6, idx, 0)) counter++
+        if (this.scanLRookMove(val, 6, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 6, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 6, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 6, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 6, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 6, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 11: 
+        if (this.scanKingMove(val, 6, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankFive.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 5, idx)) counter++
+        this.resolveMove()
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 5, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 5, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 5, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 5, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 5, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 7:
+        if (this.scanURookMove(val, 5, idx, 0)) counter++
+        if (this.scanDRookMove(val, 5, idx, 0)) counter++
+        if (this.scanLRookMove(val, 5, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 5, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 9: 
+        if (this.scanURookMove(val, 5, idx, 0)) counter++
+        if (this.scanDRookMove(val, 5, idx, 0)) counter++
+        if (this.scanLRookMove(val, 5, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 5, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 5, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 5, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 5, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 5, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 11: 
+        if (this.scanKingMove(val, 5, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankFour.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 4, idx)) counter++
+        this.resolveMove()
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 4, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 4, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 4, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 4, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 4, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 7:
+        if (this.scanURookMove(val, 4, idx, 0)) counter++
+        if (this.scanDRookMove(val, 4, idx, 0)) counter++
+        if (this.scanLRookMove(val, 4, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 4, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 9: 
+        if (this.scanURookMove(val, 4, idx, 0)) counter++
+        if (this.scanDRookMove(val, 4, idx, 0)) counter++
+        if (this.scanLRookMove(val, 4, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 4, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 4, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 4, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 4, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 4, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 11: 
+        if (this.scanKingMove(val, 4, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankThree.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 3, idx)) counter++
+        this.resolveMove()
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 3, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 3, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 3, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 3, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 3, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 7:
+        if (this.scanURookMove(val, 3, idx, 0)) counter++
+        if (this.scanDRookMove(val, 3, idx, 0)) counter++
+        if (this.scanLRookMove(val, 3, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 3, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 9: 
+        if (this.scanURookMove(val, 3, idx, 0)) counter++
+        if (this.scanDRookMove(val, 3, idx, 0)) counter++
+        if (this.scanLRookMove(val, 3, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 3, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 3, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 3, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 3, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 3, idx, 0)) counter++
+        this.resolveMove()
+        break
+      case 11: 
+        if (this.scanKingMove(val, 3, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankTwo.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 2, idx)) counter++
+        this.resolveMove()        
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 2, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 2, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 2, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 2, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 2, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 7:
+        if (this.scanURookMove(val, 2, idx, 0)) counter++
+        if (this.scanDRookMove(val, 2, idx, 0)) counter++
+        if (this.scanLRookMove(val, 2, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 2, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 9: 
+        if (this.scanURookMove(val, 2, idx, 0)) counter++
+        if (this.scanDRookMove(val, 2, idx, 0)) counter++
+        if (this.scanLRookMove(val, 2, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 2, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 2, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 2, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 2, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 2, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 11: 
+        if (this.scanKingMove(val, 2, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankOne.forEach((val, idx) => {
+    switch(val) {
+      case 1: 
+        if (this.scanWhitePawn(val, 1, idx)) counter++
+        this.resolveMove()        
+        break
+      case 3:
+        if (this.scanDLBishopMove(val, 1, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 1, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 1, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 1, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 5: 
+        if (this.scanKnightMove(val, 1, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 7:
+        if (this.scanURookMove(val, 1, idx, 0)) counter++
+        if (this.scanDRookMove(val, 1, idx, 0)) counter++
+        if (this.scanLRookMove(val, 1, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 1, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 9: 
+        if (this.scanURookMove(val, 1, idx, 0)) counter++
+        if (this.scanDRookMove(val, 1, idx, 0)) counter++
+        if (this.scanLRookMove(val, 1, idx, 0)) counter++ 
+        if (this.scanRRookMove(val, 1, idx, 0)) counter++
+        if (this.scanDLBishopMove(val, 1, idx, 0)) counter++
+        if (this.scanDRBishopMove(val, 1, idx, 0)) counter++ 
+        if (this.scanULBishopMove(val, 1, idx, 0)) counter++ 
+        if (this.scanURBishopMove(val, 1, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      case 11: 
+        if (this.scanKingMove(val, 1, idx, 0)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  if (counter > 0) return false
+  else return true
+  }
+
+  searchBlackMoves() {
+  let counter = 0
+  this.state.rankEight.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 8, idx)) counter++
+        this.resolveMove()
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 8, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 8, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 8, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 8, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 8, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 8:
+        if (this.scanURookMove(val, 8, idx, 1)) counter++
+        if (this.scanDRookMove(val, 8, idx, 1)) counter++
+        if (this.scanLRookMove(val, 8, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 8, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 10: 
+        if (this.scanURookMove(val, 8, idx, 1)) counter++
+        if (this.scanDRookMove(val, 8, idx, 1)) counter++
+        if (this.scanLRookMove(val, 8, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 8, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 8, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 8, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 8, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 8, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 12: 
+        if (this.scanKingMove(val, 8, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankSeven.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 7, idx)) counter++
+        this.resolveMove()
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 7, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 7, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 7, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 7, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 7, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 8:
+        if (this.scanURookMove(val, 7, idx, 1)) counter++
+        if (this.scanDRookMove(val, 7, idx, 1)) counter++
+        if (this.scanLRookMove(val, 7, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 7, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 10: 
+        if (this.scanURookMove(val, 7, idx, 1)) counter++
+        if (this.scanDRookMove(val, 7, idx, 1)) counter++
+        if (this.scanLRookMove(val, 7, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 7, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 7, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 7, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 7, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 7, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 12: 
+        if (this.scanKingMove(val, 7, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankSix.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 6, idx)) counter++
+        this.resolveMove()
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 6, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 6, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 6, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 6, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 6, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 8:
+        if (this.scanURookMove(val, 6, idx, 1)) counter++
+        if (this.scanDRookMove(val, 6, idx, 1)) counter++
+        if (this.scanLRookMove(val, 6, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 6, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 10: 
+        if (this.scanURookMove(val, 6, idx, 1)) counter++
+        if (this.scanDRookMove(val, 6, idx, 1)) counter++
+        if (this.scanLRookMove(val, 6, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 6, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 6, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 6, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 6, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 6, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 12: 
+        if (this.scanKingMove(val, 6, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankFive.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 5, idx)) counter++
+        this.resolveMove()
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 5, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 5, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 5, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 5, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 5, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 8:
+        if (this.scanURookMove(val, 5, idx, 1)) counter++
+        if (this.scanDRookMove(val, 5, idx, 1)) counter++
+        if (this.scanLRookMove(val, 5, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 5, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 10: 
+        if (this.scanURookMove(val, 5, idx, 1)) counter++
+        if (this.scanDRookMove(val, 5, idx, 1)) counter++
+        if (this.scanLRookMove(val, 5, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 5, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 5, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 5, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 5, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 5, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 12: 
+        if (this.scanKingMove(val, 5, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankFour.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 4, idx)) counter++
+        this.resolveMove()
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 4, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 4, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 4, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 4, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 4, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 8:
+        if (this.scanURookMove(val, 4, idx, 1)) counter++
+        if (this.scanDRookMove(val, 4, idx, 1)) counter++
+        if (this.scanLRookMove(val, 4, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 4, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 10: 
+        if (this.scanURookMove(val, 4, idx, 1)) counter++
+        if (this.scanDRookMove(val, 4, idx, 1)) counter++
+        if (this.scanLRookMove(val, 4, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 4, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 4, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 4, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 4, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 4, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 12: 
+        if (this.scanKingMove(val, 4, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankThree.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 3, idx)) counter++
+        this.resolveMove()
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 3, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 3, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 3, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 3, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 3, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 8:
+        if (this.scanURookMove(val, 3, idx, 1)) counter++
+        if (this.scanDRookMove(val, 3, idx, 1)) counter++
+        if (this.scanLRookMove(val, 3, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 3, idx, 1)) counter++
+        this.resolveMove()
+        break
+      case 10: 
+        if (this.scanURookMove(val, 3, idx, 1)) counter++
+        if (this.scanDRookMove(val, 3, idx, 1)) counter++
+        if (this.scanLRookMove(val, 3, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 3, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 3, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 3, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 3, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 3, idx, 1)) counter++
+        
+        break
+      case 12: 
+        if (this.scanKingMove(val, 3, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankTwo.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 2, idx)) counter++
+        this.resolveMove()        
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 2, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 2, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 2, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 2, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 2, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 8:
+        if (this.scanURookMove(val, 2, idx, 1)) counter++
+        if (this.scanDRookMove(val, 2, idx, 1)) counter++
+        if (this.scanLRookMove(val, 2, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 2, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 10: 
+        if (this.scanURookMove(val, 2, idx, 1)) counter++
+        if (this.scanDRookMove(val, 2, idx, 1)) counter++
+        if (this.scanLRookMove(val, 2, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 2, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 2, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 2, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 2, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 2, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 12: 
+        if (this.scanKingMove(val, 2, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  this.state.rankOne.forEach((val, idx) => {
+    switch(val) {
+      case 2: 
+        if (this.scanBlackPawn(val, 1, idx)) counter++
+        this.resolveMove()        
+        break
+      case 4:
+        if (this.scanDLBishopMove(val, 1, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 1, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 1, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 1, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 6: 
+        if (this.scanKnightMove(val, 1, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 8:
+        if (this.scanURookMove(val, 1, idx, 1)) counter++
+        if (this.scanDRookMove(val, 1, idx, 1)) counter++
+        if (this.scanLRookMove(val, 1, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 1, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 10: 
+        if (this.scanURookMove(val, 1, idx, 1)) counter++
+        if (this.scanDRookMove(val, 1, idx, 1)) counter++
+        if (this.scanLRookMove(val, 1, idx, 1)) counter++ 
+        if (this.scanRRookMove(val, 1, idx, 1)) counter++
+        if (this.scanDLBishopMove(val, 1, idx, 1)) counter++
+        if (this.scanDRBishopMove(val, 1, idx, 1)) counter++ 
+        if (this.scanULBishopMove(val, 1, idx, 1)) counter++ 
+        if (this.scanURBishopMove(val, 1, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      case 12: 
+        if (this.scanKingMove(val, 1, idx, 1)) counter++
+        this.resolveMove()        
+        break
+      default: break
+    }
+  })
+  if (counter > 0) return false
+  else return true
   }
 
   selectArray(input) {
