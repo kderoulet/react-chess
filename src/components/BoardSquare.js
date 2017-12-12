@@ -2,6 +2,7 @@ import React from 'react'
 
 const BoardSquare = (props) => {
     let content
+    let border
     switch (props.squareVal) {
         case 1: content = "♙";
         break
@@ -52,8 +53,8 @@ const BoardSquare = (props) => {
         case 112: content = "♚";
         break
         default: break;
-        
     }
+    props.squareVal >= 100 ? border="2px blue solid" : border="1px black solid"
     return (
         <td 
             onClick={(e) => {props.handleMovement(e)}}
@@ -61,6 +62,7 @@ const BoardSquare = (props) => {
             datarank={props.rank}
             dataindexnumber={props.index}
             datathreatened="0"
+            style={{border: border}}
             >
              {content}
         </td>

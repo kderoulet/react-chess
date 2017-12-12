@@ -3,6 +3,7 @@
 }
 
 td {
+  box-sizing: border-box;
   border: 1px black solid;
   min-width: 50px;
   max-width: 50px;

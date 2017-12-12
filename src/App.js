@@ -69,49 +69,45 @@ class App extends Component {
 
   whitePawnMove(piece) {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
-    let array1 = this.selectArray(currentRank+1)
-    let threatened1 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1]
-    let threatened2 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1]
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)    
+    let nextRank = this.selectArray(currentRank+1)
+    let threatened1 = nextRank[currentIndex-1]
+    let threatened2 = nextRank[currentIndex+1]
     if (threatened1 > 0 && threatened1 % 2 === 0) {
-      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1] += 100
+      nextRank[currentIndex-1] += 100
     }
     if (threatened2 > 0 && threatened2 % 2 === 0) {
-      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1] += 100
+      nextRank[currentIndex+1] += 100
     }
-    if (piece.getAttribute("dataRank") === "2") {
-      let array2 = this.selectArray(currentRank+2)          
-      array1[piece.getAttribute("dataIndexnumber")] += 100;
-      array2[piece.getAttribute("dataIndexNumber")] += 100;
-    }
-    else {
-      let moveSquare = array1[piece.getAttribute("dataIndexnumber")];      
-      if (moveSquare === 0) {
-        array1[piece.getAttribute("dataIndexnumber")] = 100;
-      }
+    if (nextRank[currentIndex] === 0) {
+      nextRank[currentIndex] += 100
+      if (currentRank === 2) {
+        if (this.selectArray(currentRank+2)[currentIndex] === 0) {
+          this.selectArray(currentRank+2)[currentIndex] += 100
+        }
+      } 
     }
   }
 
   blackPawnMove(piece) {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
-    let array1 = this.selectArray(currentRank-1)
-    let threatened1 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1]
-    let threatened2 = array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1]
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)    
+    let nextRank = this.selectArray(currentRank-1)
+    let threatened1 = nextRank[currentIndex-1]
+    let threatened2 = nextRank[currentIndex+1]
     if (threatened1 > 0 && threatened1 % 2 === 1) {
-      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) - 1] += 100
+      nextRank[currentIndex-1] += 100
     }
     if (threatened2 > 0 && threatened2 % 2 === 1) {
-      array1[parseInt(piece.getAttribute("dataIndexnumber"), 10) + 1] += 100
+      nextRank[currentIndex+1] += 100
     }
-    if (piece.getAttribute("dataRank") === "7") {
-      let array2 = this.selectArray(currentRank-2)       
-      array1[piece.getAttribute("dataIndexnumber")] += 100;
-      array2[piece.getAttribute("dataIndexNumber")] += 100;
-    }
-    else {
-      let moveSquare = array1[piece.getAttribute("dataIndexnumber")];      
-        if (moveSquare === 0) {
-          array1[piece.getAttribute("dataIndexnumber")] = 100;
+    if (nextRank[currentIndex] === 0) {
+      nextRank[currentIndex] += 100
+      if (currentRank === 7) {
+        if (this.selectArray(currentRank-2)[currentIndex] === 0) {
+          this.selectArray(currentRank-2)[currentIndex] += 100
         }
+      } 
     }
   }
 
