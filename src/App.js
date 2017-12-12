@@ -237,7 +237,6 @@ class App extends Component {
         }
       }
     }
-  
 
   blackRookMove(piece) {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
@@ -371,7 +370,7 @@ class App extends Component {
       if (lowerRank[currentIndex+1] === 0 || lowerRank[currentIndex+1] % 2 === remainder) {
         lowerRank[currentIndex+1] += 100
       }
-      if (lowerRank[currentIndex-1] === 0 || currentRank[currentIndex-1] % 2 === remainder) {
+      if (lowerRank[currentIndex-1] === 0 || lowerRank[currentIndex-1] % 2 === remainder) {
         lowerRank[currentIndex-1] += 100      
       }
     }
@@ -659,6 +658,8 @@ class App extends Component {
     array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
     array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
     this.finishMove()
+    this.state.turnCounter === 1 ? this.setState({turnCounter: 2}) : this.setState({turnCounter: 1}); 
+    console.log(this.state.turnCounter)
     this.findWhiteKing();
     this.findBlackKing();
   }
@@ -673,8 +674,6 @@ class App extends Component {
     this.state.rankTwo.forEach((num, idx) => {if (num >= 100) this.state.rankTwo.splice(idx, 1, num-100)})
     this.state.rankOne.forEach((num, idx) => {if (num >= 100) this.state.rankOne.splice(idx, 1, num-100)})
     this.setState({selectedPiece: false})
-    this.state.turnCounter === 1 ? this.setState({turnCounter: 2}) : this.setState({turnCounter: 1}); 
-    console.log(this.state.turnCounter)
   }
 
   selectArray(input) {
