@@ -35,35 +35,37 @@ class App extends Component {
         else this.allowMovement(e)
       }
       else {
-        this.setState({selectedPiece: e.target})
-        switch (e.target.getAttribute("dataValue")) {
-          case "1": this.whitePawnMove(e.target)
-          break
-          case "2": this.blackPawnMove(e.target)
-          break
-          case "3": this.whiteBishopMove(e.target)
-          break
-          case "4": this.blackBishopMove(e.target)
-          break
-          case "5": this.blackKnightMove(e.target)
-          break
-          case "6": this.whiteKnightMove(e.target)
-          break
-          case "7": this.whiteRookMove(e.target)
-          break
-          case "8": this.blackRookMove(e.target)
-          break
-          case "9": this.whiteQueenMove(e.target)
-          break
-          case "10": this.blackQueenMove(e.target)
-          break
-          case "11": this.whiteKingMove(e.target)
-          break
-          case "12": this.blackKingMove(e.target)
-          break
-          default: break
+        if (e.target.getAttribute("dataValue") % 2 === this.state.turnCounter) {
+          this.setState({selectedPiece: e.target})
+          switch (e.target.getAttribute("dataValue")) {
+            case "1": this.whitePawnMove(e.target)
+            break
+            case "2": this.blackPawnMove(e.target)
+            break
+            case "3": this.whiteBishopMove(e.target)
+            break
+            case "4": this.blackBishopMove(e.target)
+            break
+            case "5": this.blackKnightMove(e.target)
+            break
+            case "6": this.whiteKnightMove(e.target)
+            break
+            case "7": this.whiteRookMove(e.target)
+            break
+            case "8": this.blackRookMove(e.target)
+            break
+            case "9": this.whiteQueenMove(e.target)
+            break
+            case "10": this.blackQueenMove(e.target)
+            break
+            case "11": this.whiteKingMove(e.target)
+            break
+            case "12": this.blackKingMove(e.target)
+            break
+            default: break
       }
     }
+  }
   }
 
   checkMove(value, rank, index, moveRank, moveIndex) {
