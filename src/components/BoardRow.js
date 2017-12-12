@@ -5,7 +5,7 @@ import BoardSquare from './BoardSquare'
 const BoardRow = (props) => {    
     return(
         <tr>
-            {props.rankState.map((squareVal, index) => 
+            {props.rankState.map((squareVal, index) =>
                 <BoardSquare
                     rank={props.rank}
                     squareVal={squareVal}

@@ -3,5 +3,9 @@
 }
 
 td {
-  border: 1px black solid
+  border: 1px black solid;
+  min-width: 50px;
+  max-width: 50px;
+  text-align: center;
+  padding: 10px;
 }
