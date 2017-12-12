@@ -3,6 +3,16 @@ import React from 'react'
 const BoardSquare = (props) => {
     let content
     let border
+    let color
+    if (props.rank % 2) {
+        if (props.index % 2) {
+            color = "white"
+        } else color = "lightgrey"
+    } else {
+        if (props.index % 2) {
+            color = "lightgrey"
+        } else color = "white"
+    }
     switch (props.squareVal) {
         case 1: content = "♙";
         break
@@ -61,8 +71,7 @@ const BoardSquare = (props) => {
             datavalue={props.squareVal}
             datarank={props.rank}
             dataindexnumber={props.index}
-            datathreatened="0"
-            style={{border: border}}
+            style={{border: border, backgroundColor: color}}
             >
              {content}
         </td>

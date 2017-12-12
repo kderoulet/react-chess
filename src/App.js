@@ -23,14 +23,14 @@ class App extends Component {
         rankTwo: [1, 1, 1, 1, 1, 1, 1, 1],
         rankOne: [7, 5, 3, 9, 11, 3, 5, 7],
         selectedPiece: false,
-        turnCounter: 1
+        turnCounter: 1,
     }
   }
 
   handleMovement = (e) => {
       if (this.state.selectedPiece) {
         if (parseInt(e.target.getAttribute("dataValue"), 10) < 100) {
-          this.finishMove();          
+          this.resolveMove();          
         }
         else this.allowMovement(e)
       }
@@ -67,26 +67,58 @@ class App extends Component {
     }
   }
 
+  checkMove(value, rank, index, moveRank, moveIndex) {
+    rank.splice(index, 1, 0)
+    let temp = moveRank.splice(moveIndex, 1, value)[0]
+    if (this.findWhiteKing()) {
+      rank.splice(index, 1, value)
+      moveRank.splice(moveIndex, 1, temp)
+      return false
+    }
+    else {
+      rank.splice(index, 1, value)
+      moveRank.splice(moveIndex, 1, temp)
+      return true
+    }
+  }
+
   whitePawnMove(piece) {
+    let numMoves = 0
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
-    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)    
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
+    console.log("piece value:" + pieceValue)  
+    let rankArray = this.selectArray(currentRank)    
     let nextRank = this.selectArray(currentRank+1)
     let threatened1 = nextRank[currentIndex-1]
     let threatened2 = nextRank[currentIndex+1]
     if (threatened1 > 0 && threatened1 % 2 === 0) {
-      nextRank[currentIndex-1] += 100
+      if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex-1)) {
+        nextRank[currentIndex-1] += 100
+        numMoves++
+      }
     }
     if (threatened2 > 0 && threatened2 % 2 === 0) {
-      nextRank[currentIndex+1] += 100
+      if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
+        nextRank[currentIndex+1] += 100
+        numMoves++        
+      }
     }
     if (nextRank[currentIndex] === 0) {
-      nextRank[currentIndex] += 100
+      if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex)) {
+        nextRank[currentIndex] += 100
+        numMoves++
+      }
       if (currentRank === 2) {
+        let doubleRank = this.selectArray(currentRank+2)
         if (this.selectArray(currentRank+2)[currentIndex] === 0) {
+          if (this.checkMove(pieceValue, rankArray, currentIndex, doubleRank, currentIndex))
           this.selectArray(currentRank+2)[currentIndex] += 100
+          numMoves++
         }
       } 
     }
+    if (numMoves === 0) this.resolveMove();
   }
 
   blackPawnMove(piece) {
@@ -411,109 +443,10 @@ class App extends Component {
       kingRank = 8;
       kingIndex = this.state.rankEight.indexOf(11);
     }
-    this.whiteKingInCheck(kingRank, kingIndex) ? console.log('w check') : console.log('w no check')
+    this.whiteKingInCheck(kingRank, kingIndex) ? console.log(`white checked`) : console.log('w no check')
+    return this.whiteKingInCheck(kingRank, kingIndex) ? true : false
   }
   
-  whiteKingInCheck(rank, idx) {
-    // check for pawns
-    switch (2) {
-      case this.selectArray(rank+1)[idx+1]: return true
-      case this.selectArray(rank+1)[idx-1]: return true
-      default: break
-    } 
-    // check for knights
-    switch (6) {
-      case this.selectArray(rank+2)[idx+1]: return true
-      case this.selectArray(rank+2)[idx-1]: return true
-      case this.selectArray(rank+1)[idx+2]: return true
-      case this.selectArray(rank+1)[idx-2]: return true
-      case this.selectArray(rank-1)[idx+2]: return true
-      case this.selectArray(rank-1)[idx-2]: return true
-      case this.selectArray(rank-2)[idx+1]: return true
-      case this.selectArray(rank-2)[idx-1]: return true
-      default: break  
-    }
-    // check for king
-    switch (12) {
-      case this.selectArray(rank)[idx+1]: return true
-      case this.selectArray(rank)[idx-1]: return true
-      case this.selectArray(rank+1)[idx]: return true
-      case this.selectArray(rank+1)[idx+1]: return true
-      case this.selectArray(rank+1)[idx-1]: return true
-      case this.selectArray(rank-1)[idx]: return true
-      case this.selectArray(rank-1)[idx+1]: return true
-      case this.selectArray(rank-1)[idx-1]: return true
-      default: break
-    }
-    // check for the rooks/queens
-    for (let j = idx-1; j >= 0; j--) {
-      if (this.selectArray(rank)[j]) {
-        if (this.selectArray(rank)[j] === 8 || this.selectArray(rank)[j] === 10) {
-          return true
-        }
-        else j = -1;
-      }
-    }
-    for (let j = idx+1; j <= 8; j++) {
-      if (this.selectArray(rank)[j]) {
-        if (this.selectArray(rank)[j] === 8 || this.selectArray(rank)[j] === 10) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = rank+1; j <= 8; j++) {
-      if (this.selectArray(j)[idx]) {
-        if (this.selectArray(j)[idx] === 8 || this.selectArray(j)[idx] === 10) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = rank-1; j >= 0; j--) {
-      if (this.selectArray(j)[idx]) {
-        if (this.selectArray(j)[idx] === 8 || this.selectArray(j)[idx] === 10) {
-          return true
-        }
-        else j = -1;
-      }
-    }
-    // check for the bishops/queens
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank+j)[idx+j]) {
-        if (this.selectArray(rank+j)[idx+j] === 4 || this.selectArray(rank+j)[idx+j] === 10) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank+j)[idx-j]) {
-        if (this.selectArray(rank+j)[idx-j] === 4 || this.selectArray(rank+j)[idx-j] === 10) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank-j)[idx+j]) {
-        if (this.selectArray(rank-j)[idx+j] === 4 || this.selectArray(rank-j)[idx+j] === 10) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank-j)[idx-j]) {
-        if (this.selectArray(rank-j)[idx-j] === 4 || this.selectArray(rank-j)[idx-j] === 10) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    return false
-  }
-
   findBlackKing() {
     let kingRank;
     let kingIndex;
@@ -549,18 +482,44 @@ class App extends Component {
       kingRank = 8;
       kingIndex = this.state.rankEight.indexOf(12);
     }
-    this.blackKingInCheck(kingRank, kingIndex) ? console.log('b check') : console.log('b no check')
-  }
-  
+    this.blackKingInCheck(kingRank, kingIndex) ? console.log(`black checked`) : console.log('b no check')
+  }     
+
   blackKingInCheck(rank, idx) {
-    // check for pawns
-    switch (1) {
-      case this.selectArray(rank-1)[idx+1]: return true
-      case this.selectArray(rank-1)[idx-1]: return true
-      default: break
-    } 
+    if (this.checkForBishops(rank, idx, 3, 9)) return true
+    if (this.checkForRooks(rank, idx, 7, 9)) return true
+    if (this.checkForWhitePawns(rank, idx)) return true
+    if (this.checkForKnights(rank, idx, 5)) return true
+    if (this.checkForKing(rank, idx, 11)) return true
+    else return false
+  }
+    
+  whiteKingInCheck(rank, idx) {
+    if (this.checkForBishops(rank, idx, 4, 10)) return true
+    if (this.checkForRooks(rank, idx, 8, 10)) return true
+    if (this.checkForBlackPawns(rank, idx)) return true
+    if (this.checkForKnights(rank, idx, 6)) return true
+    if (this.checkForKing(rank, idx, 12)) return true
+    else return false    
+  }
+
+    checkForWhitePawns(rank, idx) {
+      switch (1) {
+        case this.selectArray(rank-1)[idx+1]: return true
+        case this.selectArray(rank-1)[idx-1]: return true
+        default: break
+      } 
+    }
+    checkForBlackPawns(rank, idx) {
+      switch (2) {
+        case this.selectArray(rank+1)[idx+1]: return true
+        case this.selectArray(rank+1)[idx-1]: return true
+        default: break
+      } 
+    }
     // check for knights
-    switch (5) {
+    checkForKnights(rank, idx, pieceValue) {
+      switch (pieceValue) {
       case this.selectArray(rank+2)[idx+1]: return true
       case this.selectArray(rank+2)[idx-1]: return true
       case this.selectArray(rank+1)[idx+2]: return true
@@ -571,8 +530,9 @@ class App extends Component {
       case this.selectArray(rank-2)[idx-1]: return true
       default: break  
     }
-    // check for king
-    switch (11) {
+  }
+    checkForKing(rank, idx, pieceValue) {
+    switch (pieceValue) {
       case this.selectArray(rank)[idx+1]: return true
       case this.selectArray(rank)[idx-1]: return true
       case this.selectArray(rank+1)[idx]: return true
@@ -583,88 +543,90 @@ class App extends Component {
       case this.selectArray(rank-1)[idx-1]: return true
       default: break
     }
-    // check for the rooks/queens
-    for (let j = idx-1; j >= 0; j--) {
-      if (this.selectArray(rank)[j]) {
-        if (this.selectArray(rank)[j] === 7 || this.selectArray(rank)[j] === 9) {
-          return true
-        }
-        else j = -1;
-      }
-    }
-    for (let j = idx+1; j <= 8; j++) {
-      if (this.selectArray(rank)[j]) {
-        if (this.selectArray(rank)[j] === 7 || this.selectArray(rank)[j] === 9) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = rank+1; j <= 8; j++) {
-      if (this.selectArray(j)[idx]) {
-        if (this.selectArray(j)[idx] === 7 || this.selectArray(j)[idx] === 9) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = rank-1; j >= 0; j--) {
-      if (this.selectArray(j)[idx]) {
-        if (this.selectArray(j)[idx] === 7 || this.selectArray(j)[idx] === 9) {
-          return true
-        }
-        else j = -1;
-      }
-    }
-    // check for the bishops/queens
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank+j)[idx+j]) {
-        if (this.selectArray(rank+j)[idx+j] === 3 || this.selectArray(rank+j)[idx+j] === 9) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank+j)[idx-j]) {
-        if (this.selectArray(rank+j)[idx-j] === 3 || this.selectArray(rank+j)[idx-j] === 9) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank-j)[idx+j]) {
-        if (this.selectArray(rank-j)[idx+j] === 3 || this.selectArray(rank-j)[idx+j] === 9) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    for (let j = 1; j <= 8; j++) {
-      if (this.selectArray(rank-j)[idx-j]) {
-        if (this.selectArray(rank-j)[idx-j] === 3 || this.selectArray(rank-j)[idx-j] === 9) {
-          return true
-        }
-        else j = 9;
-      }
-    }
-    return false
   }
+    checkForRooks(rank, idx, valOne, valTwo) {
+      for (let j = idx-1; j >= 0; j--) {
+        if (this.selectArray(rank)[j]) {
+          if (this.selectArray(rank)[j] === valOne || this.selectArray(rank)[j] === valTwo) {
+            return true
+          }
+          else j = -1;
+        }
+      }
+      for (let j = idx+1; j <= 8; j++) {
+        if (this.selectArray(rank)[j]) {
+          if (this.selectArray(rank)[j] === valOne || this.selectArray(rank)[j] === valTwo) {
+            return true
+          }
+          else j = 9;
+        }
+      }
+      for (let j = rank+1; j <= 8; j++) {
+        if (this.selectArray(j)[idx]) {
+          if (this.selectArray(j)[idx] === valOne || this.selectArray(j)[idx] === valTwo) {
+            return true
+          }
+          else j = 9;
+        }
+      }
+      for (let j = rank-1; j >= 0; j--) {
+        if (this.selectArray(j)[idx]) {
+          if (this.selectArray(j)[idx] === valOne || this.selectArray(j)[idx] === valTwo) {
+            return true
+          }
+          else j = -1;
+        }
+      }
+    }
+
+    checkForBishops(rank, idx, valOne, valTwo) {
+      for (let j = 1; j <= 8; j++) {
+        if (this.selectArray(rank+j)[idx+j]) {
+          if (this.selectArray(rank+j)[idx+j] === valOne || this.selectArray(rank+j)[idx+j] === valTwo) {
+            return true
+          }
+          else j = 9;
+        }
+      }
+      for (let j = 1; j <= 8; j++) {
+        if (this.selectArray(rank+j)[idx-j]) {
+          if (this.selectArray(rank+j)[idx-j] === valOne || this.selectArray(rank+j)[idx-j] === valTwo) {
+            return true
+          }
+          else j = 9;
+        }
+      }
+      for (let j = 1; j <= 8; j++) {
+        if (this.selectArray(rank-j)[idx+j]) {
+          if (this.selectArray(rank-j)[idx+j] === valOne || this.selectArray(rank-j)[idx+j] === valTwo) {
+            return true
+          }
+          else j = 9;
+        }
+      }
+      for (let j = 1; j <= 8; j++) {
+        if (this.selectArray(rank-j)[idx-j]) {
+          if (this.selectArray(rank-j)[idx-j] === valOne || this.selectArray(rank-j)[idx-j] === valTwo) {
+            return true
+          }
+          else j = 9;
+        }
+      }
+      return false
+    }
 
   allowMovement(e) {
     let array1 = this.selectArray(parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10))
     let array2 = this.selectArray(parseInt(e.target.getAttribute("dataRank"), 10))
     array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
     array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
-    this.finishMove()
+    this.resolveMove()
     this.state.turnCounter === 1 ? this.setState({turnCounter: 2}) : this.setState({turnCounter: 1}); 
-    console.log(this.state.turnCounter)
     this.findWhiteKing();
     this.findBlackKing();
   }
 
-  finishMove = () => {
+  resolveMove = () => {
     this.state.rankEight.forEach((num, idx) => {if (num >= 100) this.state.rankEight.splice(idx, 1, num-100)})
     this.state.rankSeven.forEach((num, idx) => {if (num >= 100) this.state.rankSeven.splice(idx, 1, num-100)})
     this.state.rankSix.forEach((num, idx) => {if (num >= 100) this.state.rankSix.splice(idx, 1, num-100)})
