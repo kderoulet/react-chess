@@ -483,34 +483,51 @@ class App extends Component {
     let kingRank = parseInt(piece.getAttribute("dataRank"), 10)
     let currentRank = this.selectArray(kingRank)
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)                
     if (currentRank[currentIndex-1] === 0 || currentRank[currentIndex-1] % 2 === remainder) {
+      if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex-1)) {
       currentRank[currentIndex-1] += 100
+      }
     }
     if (currentRank[currentIndex+1] === 0 || currentRank[currentIndex+1] % 2 === remainder) {
+      if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex+1)) {        
       currentRank[currentIndex+1] += 100
+      }
     }
     if (this.selectArray(kingRank+1)) {
       let upperRank = this.selectArray(kingRank+1)      
-      if (upperRank[currentIndex]=== 0 || upperRank[currentIndex] % 2 === remainder) {
+      if (upperRank[currentIndex] === 0 || upperRank[currentIndex] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex)) {          
         upperRank[currentIndex] += 100
+        }
       }
       if (upperRank[currentIndex+1] === 0 || upperRank[currentIndex+1] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex+1)) {          
         upperRank[currentIndex+1] += 100
+        }
       }
       if (upperRank[currentIndex-1] === 0 || upperRank[currentIndex-1] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, upperRank, currentIndex-1)) {          
         upperRank[currentIndex-1] += 100
+        }
       }
     }
     if (this.selectArray(kingRank-1)) {
       let lowerRank = this.selectArray(kingRank-1)
       if (lowerRank[currentIndex] === 0 || lowerRank[currentIndex] % 2 === remainder) {
-        lowerRank[currentIndex] += 100
+        if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex)) {          
+          lowerRank[currentIndex] += 100
+        }
       }
       if (lowerRank[currentIndex+1] === 0 || lowerRank[currentIndex+1] % 2 === remainder) {
-        lowerRank[currentIndex+1] += 100
+        if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex+1)) {          
+          lowerRank[currentIndex+1] += 100
+        }
       }
       if (lowerRank[currentIndex-1] === 0 || lowerRank[currentIndex-1] % 2 === remainder) {
+        if (this.checkMove(pieceValue, currentRank, currentIndex, lowerRank, currentIndex-1)) {          
         lowerRank[currentIndex-1] += 100      
+        }
       }
     }
   }
