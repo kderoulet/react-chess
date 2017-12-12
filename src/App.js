@@ -61,8 +61,7 @@ class App extends Component {
           break
           case "12": this.blackKingMove(e.target)
           break
-          default: console.log('default')
-          break
+          default: break
       }
     }
   }
@@ -70,15 +69,28 @@ class App extends Component {
   checkMove(value, rank, index, moveRank, moveIndex) {
     rank.splice(index, 1, 0)
     let temp = moveRank.splice(moveIndex, 1, value)[0]
-    if (this.findWhiteKing()) {
-      rank.splice(index, 1, value)
-      moveRank.splice(moveIndex, 1, temp)
-      return false
-    }
-    else {
-      rank.splice(index, 1, value)
-      moveRank.splice(moveIndex, 1, temp)
-      return true
+    if (value % 2 === 1) {
+      if (this.findWhiteKing()) {
+        rank.splice(index, 1, value)
+        moveRank.splice(moveIndex, 1, temp)
+        return false
+      }
+      else {
+        rank.splice(index, 1, value)
+        moveRank.splice(moveIndex, 1, temp)
+        return true
+      }
+    } else {
+      if (this.findBlackKing()) {
+        rank.splice(index, 1, value)
+        moveRank.splice(moveIndex, 1, temp)
+        return false
+      }
+      else {
+        rank.splice(index, 1, value)
+        moveRank.splice(moveIndex, 1, temp)
+        return true
+      }
     }
   }
 
@@ -87,7 +99,6 @@ class App extends Component {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
     let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
-    console.log("piece value:" + pieceValue)  
     let rankArray = this.selectArray(currentRank)    
     let nextRank = this.selectArray(currentRank+1)
     let threatened1 = nextRank[currentIndex-1]
@@ -110,11 +121,12 @@ class App extends Component {
         numMoves++
       }
       if (currentRank === 2) {
-        let doubleRank = this.selectArray(currentRank+2)
-        if (this.selectArray(currentRank+2)[currentIndex] === 0) {
-          if (this.checkMove(pieceValue, rankArray, currentIndex, doubleRank, currentIndex))
-          this.selectArray(currentRank+2)[currentIndex] += 100
-          numMoves++
+        let doubleRank = this.selectArray(4)
+        if (this.selectArray(4)[currentIndex] === 0) {
+          if (this.checkMove(pieceValue, rankArray, currentIndex, doubleRank, currentIndex)) {
+            this.selectArray(4)[currentIndex] += 100
+            numMoves++
+          }
         }
       } 
     }
@@ -122,25 +134,42 @@ class App extends Component {
   }
 
   blackPawnMove(piece) {
+    let numMoves = 0
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
-    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)    
+    let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
+    let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)
+    let rankArray = this.selectArray(currentRank)    
     let nextRank = this.selectArray(currentRank-1)
     let threatened1 = nextRank[currentIndex-1]
     let threatened2 = nextRank[currentIndex+1]
     if (threatened1 > 0 && threatened1 % 2 === 1) {
-      nextRank[currentIndex-1] += 100
+      if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex-1)) {
+        nextRank[currentIndex-1] += 100
+        numMoves++
+      }
     }
     if (threatened2 > 0 && threatened2 % 2 === 1) {
-      nextRank[currentIndex+1] += 100
+      if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
+        nextRank[currentIndex+1] += 100
+        numMoves++        
+      }
     }
     if (nextRank[currentIndex] === 0) {
-      nextRank[currentIndex] += 100
+      if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex)) {
+        nextRank[currentIndex] += 100
+        numMoves++
+      }
       if (currentRank === 7) {
-        if (this.selectArray(currentRank-2)[currentIndex] === 0) {
-          this.selectArray(currentRank-2)[currentIndex] += 100
+        let doubleRank = this.selectArray(5)
+        if (doubleRank[currentIndex] === 0) {
+          if (this.checkMove(pieceValue, rankArray, currentIndex, doubleRank, currentIndex)) {
+            this.selectArray(5)[currentIndex] += 100
+            numMoves++  
+          }
         }
       } 
     }
+    if (numMoves === 0) this.resolveMove();
   }
 
   blackBishopMove(piece) {
@@ -443,7 +472,6 @@ class App extends Component {
       kingRank = 8;
       kingIndex = this.state.rankEight.indexOf(11);
     }
-    this.whiteKingInCheck(kingRank, kingIndex) ? console.log(`white checked`) : console.log('w no check')
     return this.whiteKingInCheck(kingRank, kingIndex) ? true : false
   }
   
@@ -482,24 +510,33 @@ class App extends Component {
       kingRank = 8;
       kingIndex = this.state.rankEight.indexOf(12);
     }
-    this.blackKingInCheck(kingRank, kingIndex) ? console.log(`black checked`) : console.log('b no check')
+    return this.blackKingInCheck(kingRank, kingIndex) ? true : false
   }     
 
   blackKingInCheck(rank, idx) {
     if (this.checkForBishops(rank, idx, 3, 9)) return true
+    if (this.checkForBishops(rank, idx, 103, 109)) return true
     if (this.checkForRooks(rank, idx, 7, 9)) return true
+    if (this.checkForRooks(rank, idx, 107, 109)) return true
+    if (this.checkForWhitePawns(rank, idx)) return true
     if (this.checkForWhitePawns(rank, idx)) return true
     if (this.checkForKnights(rank, idx, 5)) return true
+    if (this.checkForKnights(rank, idx, 105)) return true
     if (this.checkForKing(rank, idx, 11)) return true
+    if (this.checkForKing(rank, idx, 111)) return true
     else return false
   }
     
   whiteKingInCheck(rank, idx) {
     if (this.checkForBishops(rank, idx, 4, 10)) return true
+    if (this.checkForBishops(rank, idx, 104, 110)) return true
     if (this.checkForRooks(rank, idx, 8, 10)) return true
+    if (this.checkForRooks(rank, idx, 108, 110)) return true
     if (this.checkForBlackPawns(rank, idx)) return true
     if (this.checkForKnights(rank, idx, 6)) return true
+    if (this.checkForKnights(rank, idx, 106)) return true
     if (this.checkForKing(rank, idx, 12)) return true
+    if (this.checkForKing(rank, idx, 112)) return true
     else return false    
   }
 
@@ -546,7 +583,7 @@ class App extends Component {
   }
     checkForRooks(rank, idx, valOne, valTwo) {
       for (let j = idx-1; j >= 0; j--) {
-        if (this.selectArray(rank)[j]) {
+        if (this.selectArray(rank)[j] && this.selectArray(rank)[j] !== 100) {
           if (this.selectArray(rank)[j] === valOne || this.selectArray(rank)[j] === valTwo) {
             return true
           }
@@ -554,7 +591,7 @@ class App extends Component {
         }
       }
       for (let j = idx+1; j <= 8; j++) {
-        if (this.selectArray(rank)[j]) {
+        if (this.selectArray(rank)[j] && this.selectArray(rank)[j] !== 100) {
           if (this.selectArray(rank)[j] === valOne || this.selectArray(rank)[j] === valTwo) {
             return true
           }
@@ -562,7 +599,7 @@ class App extends Component {
         }
       }
       for (let j = rank+1; j <= 8; j++) {
-        if (this.selectArray(j)[idx]) {
+        if (this.selectArray(j)[idx] && this.selectArray(j)[idx] !== 100) {
           if (this.selectArray(j)[idx] === valOne || this.selectArray(j)[idx] === valTwo) {
             return true
           }
@@ -570,7 +607,7 @@ class App extends Component {
         }
       }
       for (let j = rank-1; j >= 0; j--) {
-        if (this.selectArray(j)[idx]) {
+        if (this.selectArray(j)[idx] && this.selectArray(j)[idx] !== 100) {
           if (this.selectArray(j)[idx] === valOne || this.selectArray(j)[idx] === valTwo) {
             return true
           }
@@ -581,7 +618,7 @@ class App extends Component {
 
     checkForBishops(rank, idx, valOne, valTwo) {
       for (let j = 1; j <= 8; j++) {
-        if (this.selectArray(rank+j)[idx+j]) {
+        if (this.selectArray(rank+j)[idx+j] && this.selectArray(rank+j)[idx+j] !== 100) {
           if (this.selectArray(rank+j)[idx+j] === valOne || this.selectArray(rank+j)[idx+j] === valTwo) {
             return true
           }
@@ -589,7 +626,7 @@ class App extends Component {
         }
       }
       for (let j = 1; j <= 8; j++) {
-        if (this.selectArray(rank+j)[idx-j]) {
+        if (this.selectArray(rank+j)[idx-j] && this.selectArray(rank+j)[idx-j] !== 100) {
           if (this.selectArray(rank+j)[idx-j] === valOne || this.selectArray(rank+j)[idx-j] === valTwo) {
             return true
           }
@@ -597,7 +634,7 @@ class App extends Component {
         }
       }
       for (let j = 1; j <= 8; j++) {
-        if (this.selectArray(rank-j)[idx+j]) {
+        if (this.selectArray(rank-j)[idx+j] && this.selectArray(rank-j)[idx+j] !== 100) {
           if (this.selectArray(rank-j)[idx+j] === valOne || this.selectArray(rank-j)[idx+j] === valTwo) {
             return true
           }
@@ -605,7 +642,7 @@ class App extends Component {
         }
       }
       for (let j = 1; j <= 8; j++) {
-        if (this.selectArray(rank-j)[idx-j]) {
+        if (this.selectArray(rank-j)[idx-j] && this.selectArray(rank-j)[idx-j] !== 100) {
           if (this.selectArray(rank-j)[idx-j] === valOne || this.selectArray(rank-j)[idx-j] === valTwo) {
             return true
           }
@@ -621,7 +658,7 @@ class App extends Component {
     array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
     array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
     this.resolveMove()
-    this.state.turnCounter === 1 ? this.setState({turnCounter: 2}) : this.setState({turnCounter: 1}); 
+    this.state.turnCounter === 1 ? this.setState({turnCounter: 0}) : this.setState({turnCounter: 1}); 
     this.findWhiteKing();
     this.findBlackKing();
   }
