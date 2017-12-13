@@ -25,6 +25,10 @@ const Game = (props) => {
             <div className='col'>
                 <SideBar
                     turnCounter={props.turnCounter}
+                    whiteInCheck={props.whiteInCheck}
+                    blackInCheck={props.blackInCheck}
+                    gameOver={props.gameOver}
+                    winner={props.winner}
                 />
                 <PromotionBox 
                     handleSelection={props.handleSelection}

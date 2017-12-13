@@ -46,7 +46,10 @@ class App extends Component {
         blackKingLeftCastle: true,
         enPassant: null,
         promoteWhite: false,
-        promoteBlack: false
+        promoteBlack: false,
+        whiteInCheck: false,
+        blackInCheck: false,
+        gameOver: false
     }
   }
 
@@ -958,20 +961,20 @@ class App extends Component {
     this.resolveMove()
     if (this.findWhiteKing()) {
       if (this.searchWhiteMoves()) {
-        this.setState({winner: 1}, function() {
+        this.setState({winner: 2}, function() {
           this.endGame();
         })
       }
-      else console.log("white is in check")
-    }
+      else this.setState({whiteInCheck: true})
+    } else this.setState({whiteInCheck: false})
     if (this.findBlackKing()) {
       if (this.searchBlackMoves()) {
-        this.setState({winner: 2}, function() {
+        this.setState({winner: 1}, function() {
           this.endGame();          
         })
       }
-      else console.log("black is in check")
-    }
+      else this.setState({blackInCheck: true})
+    } else this.setState({blackInCheck: false})
     this.state.turnCounter === 1 ? this.setState({turnCounter: 0}, function() {
       this.checkForStalemate();
     }) : this.setState({turnCounter: 1}, function() {
@@ -1345,12 +1348,15 @@ class App extends Component {
   endGame() {
     if (this.state.winner) {
       if (this.state.winner === 1) {
-        console.log('black wins')
-      } else {
         console.log('white wins')
+        this.setState({gameOver: true})
+      } else {
+        console.log('black wins')
+        this.setState({gameOver: true})
       } 
     } else {
       console.log('no one wins')
+      this.setState({gameOver: true})
     }
   }
 
@@ -2077,6 +2083,10 @@ class App extends Component {
               <Game
                 handleSelection={this.handleSelection}
                 handleMovement={this.handleMovement}
+                whiteInCheck={this.state.whiteInCheck}
+                blackInCheck={this.state.blackInCheck}
+                gameOver={this.state.gameOver}
+                winner={this.state.winner}
                 turnCounter={this.state.turnCounter}
                 promoteWhite={this.state.promoteWhite}
                 promoteBlack={this.state.promoteBlack}
