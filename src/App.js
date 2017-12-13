@@ -24,7 +24,22 @@ class App extends Component {
         rankOne: [7, 5, 3, 9, 11, 3, 5, 7],
         selectedPiece: false,
         turnCounter: 1,
-        winner: null
+        winner: null,
+        boardMemoryOne: [],
+        boardMemoryTwo: [],
+        boardMemoryThree: [],
+        boardMemoryFour: [],
+        boardMemoryFive: [],
+        boardMemorySix: [],
+        boardMemorySeven: [],
+        boardMemoryEight: [],
+        boardMemoryNine: [],
+        boardMemoryTen: [],
+        boardMemoryEleven: [],
+        boardMemoryTwelve: [],
+        twelveTurnCounter: 0,
+        hundredTurnMemory: [],
+        hundredTurnCounter: 0
     }
   }
 
@@ -494,8 +509,6 @@ class App extends Component {
     }
     return counter > 0 ? true : false
   }
-
-  
   
   blackQueenMove(piece) {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
@@ -836,21 +849,244 @@ class App extends Component {
       else console.log("black is in check")
     }
     this.state.turnCounter === 1 ? this.setState({turnCounter: 0}, function() {
-      this.checkForDraw();
+      this.checkForStalemate();
     }) : this.setState({turnCounter: 1}, function() {
-      this.checkForDraw();
-    }); 
+      this.checkForStalemate();
+    });
+    this.checkForDraw();
   }
 
   checkForDraw() {
+    let fullBoard = this.state.rankOne.concat(this.state.rankTwo, this.state.rankThree, this.state.rankFour, this.state.rankFive, this.state.rankSix, this.state.rankSeven, this.state.rankEight)
+    let pieceChecker = fullBoard.filter(value => value > 0)
+    if (pieceChecker.length <= 3) {
+      if (pieceChecker.includes(3) || pieceChecker.includes(4)) {
+        this.endGame();
+      }
+      else if (pieceChecker.includes(5) || pieceChecker.includes(6)) {
+        this.endGame();
+      }
+      else if (pieceChecker.length === 2) {
+        this.endGame();
+      }
+    }
+    if (this.state.twelveTurnCounter === 0) {
+      this.setState({boardMemoryOne: fullBoard, twelveTurnCounter: 1}, function() {
+        if (this.state.boardMemoryOne.length === this.state.boardMemoryFive.length && this.state.boardMemoryOne.length === this.state.boardMemoryNine.length) {
+          for (let i = 0; i < this.state.boardMemoryOne.length; i++) {
+            if (this.state.boardMemoryOne[i] !== this.state.boardMemoryFive[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryOne.length; i++) {
+            if (this.state.boardMemoryOne[i] !== this.state.boardMemoryNine[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 1) {
+      this.setState({boardMemoryTwo: fullBoard, twelveTurnCounter: 2}, function() {
+        if (this.state.boardMemoryTwo.length === this.state.boardMemorySix.length && this.state.boardMemoryTwo.length === this.state.boardMemoryTen.length) {
+          for (let i = 0; i < this.state.boardMemoryTwo.length; i++) {
+            if (this.state.boardMemoryTwo[i] !== this.state.boardMemorySix[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryTwo.length; i++) {
+            if (this.state.boardMemoryTwo[i] !== this.state.boardMemoryTen[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 2) {
+      this.setState({boardMemoryThree: fullBoard, twelveTurnCounter: 3}, function() {
+        if (this.state.boardMemoryThree.length === this.state.boardMemorySeven.length && this.state.boardMemoryThree.length === this.state.boardMemoryEleven.length) {
+          for (let i = 0; i < this.state.boardMemoryThree.length; i++) {
+            if (this.state.boardMemoryThree[i] !== this.state.boardMemorySeven[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryThree.length; i++) {
+            if (this.state.boardMemoryThree[i] !== this.state.boardMemoryEleven[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 3) {
+      this.setState({boardMemoryFour: fullBoard, twelveTurnCounter: 4}, function() {
+        if (this.state.boardMemoryFour.length === this.state.boardMemoryEight.length && this.state.boardMemoryFour.length === this.state.boardMemoryTwelve.length) {
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryFour[i] !== this.state.boardMemoryEight[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryFour[i] !== this.state.boardMemoryTwelve[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 4) {
+      this.setState({boardMemoryFive: fullBoard, twelveTurnCounter: 5}, function() {
+        if (this.state.boardMemoryOne.length === this.state.boardMemoryFive.length && this.state.boardMemoryOne.length === this.state.boardMemoryNine.length) {
+          for (let i = 0; i < this.state.boardMemoryFive.length; i++) {
+            if (this.state.boardMemoryOne[i] !== this.state.boardMemoryFive[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFive.length; i++) {
+            if (this.state.boardMemoryFive[i] !== this.state.boardMemoryNine[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 5) {
+      this.setState({boardMemorySix: fullBoard, twelveTurnCounter: 6}, function() {
+        if (this.state.boardMemoryTwo.length === this.state.boardMemorySix.length && this.state.boardMemoryTwo.length === this.state.boardMemoryTen.length) {
+          for (let i = 0; i < this.state.boardMemoryTwo.length; i++) {
+            if (this.state.boardMemoryTwo[i] !== this.state.boardMemorySix[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryTwo.length; i++) {
+            if (this.state.boardMemoryTwo[i] !== this.state.boardMemoryTen[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 6) {
+      this.setState({boardMemorySeven: fullBoard, twelveTurnCounter: 7}, function() {
+        if (this.state.boardMemoryThree.length === this.state.boardMemorySeven.length && this.state.boardMemoryThree.length === this.state.boardMemoryEleven.length) {
+          for (let i = 0; i < this.state.boardMemoryThree.length; i++) {
+            if (this.state.boardMemoryThree[i] !== this.state.boardMemorySeven[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryThree[i] !== this.state.boardMemoryEleven[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 7) {
+      this.setState({boardMemoryEight: fullBoard, twelveTurnCounter: 8}, function() {
+        if (this.state.boardMemoryFour.length === this.state.boardMemoryEight.length && this.state.boardMemoryFour.length === this.state.boardMemoryTwelve.length) {
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryFour[i] !== this.state.boardMemoryEight[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryFour[i] !== this.state.boardMemoryTwelve[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 8) {
+      this.setState({boardMemoryNine: fullBoard, twelveTurnCounter: 9}, function() {
+        if (this.state.boardMemoryOne.length === this.state.boardMemoryFive.length && this.state.boardMemoryOne.length === this.state.boardMemoryNine.length) {
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryOne[i] !== this.state.boardMemoryFive[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryOne[i] !== this.state.boardMemoryNine[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 9) {
+      this.setState({boardMemoryTen: fullBoard, twelveTurnCounter: 10}, function() {
+        if (this.state.boardMemoryTwo.length === this.state.boardMemorySix.length && this.state.boardMemoryTwo.length === this.state.boardMemoryTen.length) {
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryTwo[i] !== this.state.boardMemorySix[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryTwo[i] !== this.state.boardMemoryTen[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 10) {
+      this.setState({boardMemoryTwelve: fullBoard, twelveTurnCounter: 11}, function() {
+        if (this.state.boardMemoryThree.length === this.state.boardMemorySeven.length && this.state.boardMemoryThree.length === this.state.boardMemoryEleven.length) {
+          for (let i = 0; i < this.state.boardMemoryThree.length; i++) {
+            if (this.state.boardMemoryThree[i] !== this.state.boardMemorySeven[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryThree[i] !== this.state.boardMemoryEleven[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+    else if (this.state.twelveTurnCounter === 11) {
+      this.setState({boardMemoryTwelve: fullBoard, twelveTurnCounter: 0}, function() {
+        if (this.state.boardMemoryFour.length === this.state.boardMemoryEight.length && this.state.boardMemoryFour.length === this.state.boardMemoryTwelve.length) {
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryFour[i] !== this.state.boardMemoryEight[i]) {
+              return
+            }
+          }
+          for (let i = 0; i < this.state.boardMemoryFour.length; i++) {
+            if (this.state.boardMemoryFour[i] !== this.state.boardMemoryTwelve[i]) {
+              return
+            }
+          } 
+          this.endGame();
+        }
+      })
+    }
+  }
+
+  checkForStalemate() {
     if (this.state.turnCounter === 1) {
       if (this.searchWhiteMoves()) {
-        this.endGame();        
+        if (this.state.winner) {}
+        else {this.endGame()}     
       }
     }
     else if (this.state.turnCounter === 0) {
       if (this.searchBlackMoves()) {
-        this.endGame();
+        if (this.state.winner) {}
+        else {this.endGame();}
       }
     }
   }
