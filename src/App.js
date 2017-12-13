@@ -39,7 +39,12 @@ class App extends Component {
         boardMemoryTwelve: [],
         twelveTurnCounter: 0,
         hundredTurnMemory: [],
-        hundredTurnCounter: 1
+        hundredTurnCounter: 1,
+        whiteKingRightCastle: true,
+        whiteKingLeftCastle: true,
+        blackKingRightCastle: true,
+        blackKingLeftCastle: true,
+        enPassant: null
     }
   }
 
@@ -854,6 +859,16 @@ class App extends Component {
       this.checkForStalemate();
     });
     this.checkForDraw();
+    this.checkCastling();
+  }
+
+  checkCastling() {
+    if (this.state.rankOne[0] !== 7) this.setState({whiteKingLeftCastle: false})
+    if (this.state.rankOne[4] !== 11) this.setState({whiteKingLeftCastle: false, whiteKingRightCastle: false})
+    if (this.state.rankOne[7] !== 7) this.setState({whiteKingRightCastle: false})
+    if (this.state.rankEight[0] !== 8) this.setState({blackKingLeftCastle: false})
+    if (this.state.rankEight[4] !== 12) this.setState({blackKingLeftCastle: false, blackKingRightCasle: false})
+    if (this.state.rankOne[0] !== 8) this.setState({blackKingRightCastle: false})
   }
 
   checkForDraw() {
