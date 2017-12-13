@@ -39,7 +39,7 @@ class App extends Component {
         boardMemoryTwelve: [],
         twelveTurnCounter: 0,
         hundredTurnMemory: [],
-        hundredTurnCounter: 0
+        hundredTurnCounter: 1
     }
   }
 
@@ -859,6 +859,19 @@ class App extends Component {
   checkForDraw() {
     let fullBoard = this.state.rankOne.concat(this.state.rankTwo, this.state.rankThree, this.state.rankFour, this.state.rankFive, this.state.rankSix, this.state.rankSeven, this.state.rankEight)
     let pieceChecker = fullBoard.filter(value => value > 0)
+    if (this.state.hundredTurnCounter === 1) {
+      this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 2})
+    }
+    else if (this.state.hundredTurnCounter === 100) {
+      if (this.hundredTurnMemory.length === fullBoard.length) {
+        this.endGame();
+      }
+    }
+    else {
+      let temp = this.state.hundredTurnCounter
+      temp += 1
+      this.setState({hundredTurnCounter: temp})
+    }
     if (pieceChecker.length <= 3) {
       if (pieceChecker.includes(3) || pieceChecker.includes(4)) {
         this.endGame();
@@ -885,6 +898,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})
       })
     }
     else if (this.state.twelveTurnCounter === 1) {
@@ -902,6 +916,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 2) {
@@ -919,6 +934,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 3) {
@@ -936,6 +952,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 4) {
@@ -953,6 +970,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 5) {
@@ -970,6 +988,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 6) {
@@ -987,6 +1006,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 7) {
@@ -1004,6 +1024,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 8) {
@@ -1021,6 +1042,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 9) {
@@ -1055,6 +1077,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
     else if (this.state.twelveTurnCounter === 11) {
@@ -1072,6 +1095,7 @@ class App extends Component {
           } 
           this.endGame();
         }
+        else this.setState({hundredTurnMemory: fullBoard, hundredTurnCounter: 1})        
       })
     }
   }
