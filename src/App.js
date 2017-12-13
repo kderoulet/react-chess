@@ -24,6 +24,7 @@ class App extends Component {
         rankOne: [7, 5, 3, 9, 11, 3, 5, 7],
         selectedPiece: false,
         turnCounter: 1,
+        winner: null
     }
   }
 
@@ -298,9 +299,6 @@ class App extends Component {
     return counter > 0 ? true : false
   }
 
-
-
-
   blackKnightMove(piece) {
     let knightRank = parseInt(piece.getAttribute("dataRank"), 10)
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
@@ -390,6 +388,7 @@ class App extends Component {
     this.scanLRookMove(pieceValue, currentRank, currentIndex, 1)
     this.scanRRookMove(pieceValue, currentRank, currentIndex, 1)
   }
+  
   whiteRookMove(piece) {
     let currentRank = parseInt(piece.getAttribute("dataRank"), 10)
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
@@ -717,7 +716,6 @@ class App extends Component {
         default: break
       } 
     }
-    // check for knights
     checkForKnights(rank, idx, pieceValue) {
       switch (pieceValue) {
       case this.selectArray(rank+2)[idx+1]: return true
@@ -821,18 +819,51 @@ class App extends Component {
     array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
     array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
     this.resolveMove()
-    this.state.turnCounter === 1 ? this.setState({turnCounter: 0}) : this.setState({turnCounter: 1}); 
     if (this.findWhiteKing()) {
       if (this.searchWhiteMoves()) {
-        console.log("WHITE IS CHECKMATED")
+        this.setState({winner: 1}, function() {
+          this.endGame();          
+        })
       }
       else console.log("white is in check")
     }
     if (this.findBlackKing()) {
-      if(this.searchBlackMoves()) {
-        console.log("BLACK IS CHECKMATED")
+      if (this.searchBlackMoves()) {
+        this.setState({winner: 2}, function() {
+          this.endGame();          
+        })
       }
       else console.log("black is in check")
+    }
+    this.state.turnCounter === 1 ? this.setState({turnCounter: 0}, function() {
+      this.checkForDraw();
+    }) : this.setState({turnCounter: 1}, function() {
+      this.checkForDraw();
+    }); 
+  }
+
+  checkForDraw() {
+    if (this.state.turnCounter === 1) {
+      if (this.searchWhiteMoves()) {
+        this.endGame();        
+      }
+    }
+    else if (this.state.turnCounter === 0) {
+      if (this.searchBlackMoves()) {
+        this.endGame();
+      }
+    }
+  }
+
+  endGame() {
+    if (this.state.winner) {
+      if (this.state.winner === 1) {
+        console.log('black wins')
+      } else {
+        console.log('white wins')
+      } 
+    } else {
+      console.log('no one wins')
     }
   }
 
@@ -1435,7 +1466,7 @@ class App extends Component {
         if (this.scanDRBishopMove(val, 3, idx, 1)) counter++ 
         if (this.scanULBishopMove(val, 3, idx, 1)) counter++ 
         if (this.scanURBishopMove(val, 3, idx, 1)) counter++
-        
+        this.resolveMove()
         break
       case 12: 
         if (this.scanKingMove(val, 3, idx, 1)) counter++
