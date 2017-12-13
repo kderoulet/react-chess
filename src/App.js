@@ -548,6 +548,7 @@ class App extends Component {
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
     let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)                
     this.scanKingMove(pieceValue, kingRank, currentIndex, 0)
+    this.whiteCastle(pieceValue, kingRank, currentIndex);
   }
 
   blackKingMove(piece) {
@@ -555,6 +556,69 @@ class App extends Component {
     let currentIndex = parseInt(piece.getAttribute("dataIndexnumber"), 10)
     let pieceValue = parseInt(piece.getAttribute("dataValue"), 10)                
     this.scanKingMove(pieceValue, kingRank, currentIndex, 1)
+    this.blackCastle(pieceValue, kingRank, currentIndex);
+  }
+
+  whiteCastle(pieceValue, rank, currentIndex) {
+    let currentRank = this.selectArray(rank)
+    if (this.whiteKingInCheck()) return
+    else {
+      if (this.state.whiteKingRightCastle) {
+        if (this.state.rankOne[5] === 0 || this.state.rankOne[5] === 100) {
+          if (this.state.rankOne[6] === 0) {
+            if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex+1)) {
+              if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex+2)) {
+                currentRank[currentIndex+2] += 100
+              }
+            }
+          }
+        }
+      }    
+      if (this.state.whiteKingLeftCastle) {
+        if (this.state.rankOne[3] === 0 || this.state.rankOne[3] === 100) {
+          if (this.state.rankOne[2] === 0) {
+            if (this.state.rankOne[1] === 0) {
+              if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex-1)) {
+                if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex-2)) {
+                  currentRank[currentIndex-2] += 100
+                }
+              }
+            }
+          }
+        }
+      }    
+    }
+  }
+
+  blackCastle(pieceValue, rank, currentIndex) {
+    let currentRank = this.selectArray(rank)
+    if (this.blackKingInCheck()) return
+    else {
+      if (this.state.blackKingRightCastle) {
+        if (this.state.rankEight[5] === 0 || this.state.rankEight[5] === 100) {
+          if (this.state.rankEight[6] === 0) {
+            if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex+1)) {
+              if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex+2)) {
+                currentRank[currentIndex+2] += 100
+              }
+            }
+          }
+        }
+      }    
+      if (this.state.blackKingLeftCastle) {
+        if (this.state.rankEight[3] === 0 || this.state.rankEight[3] === 100) {
+          if (this.state.rankEight[2] === 0) {
+            if (this.state.rankEight[1] === 0) {
+              if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex-1)) {
+                if (this.checkMove(pieceValue, currentRank, currentIndex, currentRank, currentIndex-2)) {
+                  currentRank[currentIndex-2] += 100
+                }
+              }
+            }
+          }
+        }
+      }    
+    }
   }
 
   scanKingMove(pieceValue, kingRank, currentIndex, remainder) {
@@ -834,6 +898,38 @@ class App extends Component {
   allowMovement(e) {
     let array1 = this.selectArray(parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10))
     let array2 = this.selectArray(parseInt(e.target.getAttribute("dataRank"), 10))
+    if (this.state.selectedPiece.getAttribute("dataValue") === "11") {
+      if (this.state.selectedPiece.getAttribute("dataIndexnumber") === "4") {
+        if (e.target.getAttribute("dataIndexnumber") === "2") {
+          array1.splice(0, 1, 0)
+          array1.splice(3, 1, 7)
+        }
+      }
+    }
+    if (this.state.selectedPiece.getAttribute("dataValue") === "11") {
+      if (this.state.selectedPiece.getAttribute("dataIndexnumber") === "4") {
+        if (e.target.getAttribute("dataIndexnumber") === "6") {
+          array1.splice(7, 1, 0)
+          array1.splice(5, 1, 7)
+        }
+      }
+    }
+    if (this.state.selectedPiece.getAttribute("dataValue") === "12") {
+      if (this.state.selectedPiece.getAttribute("dataIndexnumber") === "4") {
+        if (e.target.getAttribute("dataIndexnumber") === "2") {
+          array1.splice(0, 1, 0)
+          array1.splice(3, 1, 8)
+        }
+      }
+    }
+    if (this.state.selectedPiece.getAttribute("dataValue") === "12") {
+      if (this.state.selectedPiece.getAttribute("dataIndexnumber") === "4") {
+        if (e.target.getAttribute("dataIndexnumber") === "6") {
+          array1.splice(7, 1, 0)
+          array1.splice(5, 1, 8)
+        }
+      }
+    }
     array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
     array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
     this.resolveMove()
@@ -868,7 +964,7 @@ class App extends Component {
     if (this.state.rankOne[7] !== 7) this.setState({whiteKingRightCastle: false})
     if (this.state.rankEight[0] !== 8) this.setState({blackKingLeftCastle: false})
     if (this.state.rankEight[4] !== 12) this.setState({blackKingLeftCastle: false, blackKingRightCasle: false})
-    if (this.state.rankOne[0] !== 8) this.setState({blackKingRightCastle: false})
+    if (this.state.rankEight[7] !== 8) this.setState({blackKingRightCastle: false})
   }
 
   checkForDraw() {
