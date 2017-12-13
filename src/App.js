@@ -50,6 +50,21 @@ class App extends Component {
     }
   }
 
+  handleSelection = (e) => {
+    if (this.state.promoteWhite) {
+      let position = this.state.rankEight.indexOf(1)      
+      let newPiece = parseInt(e.target.getAttribute("dataValue"), 10) 
+      this.state.rankEight.splice(position, 1, newPiece)
+      this.setState({promoteWhite: false, turnCounter: 0})
+    }
+    if (this.state.promoteBlack) {
+      let position = this.state.rankOne.indexOf(2)      
+      let newPiece = parseInt(e.target.getAttribute("dataValue"), 10)
+      this.state.rankOne.splice(position, 1, newPiece)
+      this.setState({promoteBlack: false, turnCounter: 1})      
+    }
+  }
+
   handleMovement = (e) => {
       if (this.state.selectedPiece) {
         if (parseInt(e.target.getAttribute("dataValue"), 10) < 100) {
@@ -965,6 +980,7 @@ class App extends Component {
     this.checkForDraw();
     this.checkCastling();
     this.checkEnPassant(movingPiece, arrayOneNum, arrayTwoNum, movingPieceIdx);
+    this.checkPromotion();
   }
 
   allowEnPassant(e, array1, array2) {
@@ -1028,6 +1044,15 @@ class App extends Component {
           array1.splice(5, 1, 8)
         }
       }
+    }
+  }
+
+  checkPromotion() {
+    if (this.state.rankEight.includes(1)) {
+      this.setState({turnCounter: 50, promoteWhite: true})
+    }
+    if (this.state.rankOne.includes(2)) {
+      this.setState({turnCounter: 50, promoteBlack: true})
     }
   }
 
@@ -2050,8 +2075,11 @@ class App extends Component {
             }/>
             <Route exact path='/game' render={() =>
               <Game
+                handleSelection={this.handleSelection}
                 handleMovement={this.handleMovement}
                 turnCounter={this.state.turnCounter}
+                promoteWhite={this.state.promoteWhite}
+                promoteBlack={this.state.promoteBlack}
                 rankEight={this.state.rankEight}
                 rankSeven={this.state.rankSeven}
                 rankSix={this.state.rankSix}

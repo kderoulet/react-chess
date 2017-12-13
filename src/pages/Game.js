@@ -1,6 +1,7 @@
 import React from 'react'
 import ChessBoard from '../components/ChessBoard'
 import SideBar from '../components/SideBar'
+import PromotionBox from '../components/PromotionBox'
 
 const Game = (props) => {
     return(
@@ -23,7 +24,12 @@ const Game = (props) => {
             </div>
             <div className='col'>
                 <SideBar
-                turnCounter={props.turnCounter}
+                    turnCounter={props.turnCounter}
+                />
+                <PromotionBox 
+                    handleSelection={props.handleSelection}
+                    promoteWhite={props.promoteWhite}
+                    promoteBlack={props.promoteBlack}
                 />
             </div>
         </div>
