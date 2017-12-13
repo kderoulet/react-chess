@@ -149,6 +149,22 @@ class App extends Component {
         counter++        
       }
     }
+    if (threatened1 === 0 && this.state.enPassant === currentIndex-1) {
+      if (currentRank === 5) {
+        if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
+          nextRank[currentIndex-1] += 100
+          counter++
+        }
+      }
+    }
+    if (threatened2 === 0 && this.state.enPassant === currentIndex+1) {
+      if (currentRank === 5) {
+        if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
+          nextRank[currentIndex+1] += 100
+          counter++
+        }
+      }
+    }
     if (nextRank[currentIndex] === 0) {
       if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex)) {
         nextRank[currentIndex] += 100
@@ -180,9 +196,27 @@ class App extends Component {
       }
     }
     if (threatened2 > 0 && threatened2 % 2 === 1) {
-      if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
-        nextRank[currentIndex+1] += 100
-        counter++        
+        if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
+          console.log('hits')
+          nextRank[currentIndex+1] += 100
+          counter++        
+        }
+    }
+    if (threatened1 === 0 && this.state.enPassant === currentIndex-1) {
+      if (currentRank === 4) {
+        if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
+          console.log('hittin?')
+          nextRank[currentIndex-1] += 100
+          counter++
+        }
+      }
+    }
+    if (threatened2 === 0 && this.state.enPassant === currentIndex+1) {
+      if (currentRank === 4) {
+        if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
+          nextRank[currentIndex+1] += 100
+          counter++
+        }
       }
     }
     if (nextRank[currentIndex] === 0) {
@@ -896,8 +930,73 @@ class App extends Component {
     }
 
   allowMovement(e) {
+    let movingPiece = parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10)
+    let movingPieceIdx = parseInt(this.state.selectedPiece.getAttribute("dataIndexnumber"), 10)
+    let arrayOneNum = parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10)
+    let arrayTwoNum = parseInt(e.target.getAttribute("dataRank"), 10)
     let array1 = this.selectArray(parseInt(this.state.selectedPiece.getAttribute("dataRank"), 10))
     let array2 = this.selectArray(parseInt(e.target.getAttribute("dataRank"), 10))
+    this.allowCastling(e, array1, array2)
+    this.allowEnPassant(e, array1, array2)
+    array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
+    array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
+    this.resolveMove()
+    if (this.findWhiteKing()) {
+      if (this.searchWhiteMoves()) {
+        this.setState({winner: 1}, function() {
+          this.endGame();          
+        })
+      }
+      else console.log("white is in check")
+    }
+    if (this.findBlackKing()) {
+      if (this.searchBlackMoves()) {
+        this.setState({winner: 2}, function() {
+          this.endGame();          
+        })
+      }
+      else console.log("black is in check")
+    }
+    this.state.turnCounter === 1 ? this.setState({turnCounter: 0}, function() {
+      this.checkForStalemate();
+    }) : this.setState({turnCounter: 1}, function() {
+      this.checkForStalemate();
+    });
+    this.checkForDraw();
+    this.checkCastling();
+    this.checkEnPassant(movingPiece, arrayOneNum, arrayTwoNum, movingPieceIdx);
+  }
+
+  allowEnPassant(e, array1, array2) {
+    if (this.state.selectedPiece.getAttribute("dataValue") === "1") {
+      if (this.state.selectedPiece.getAttribute("dataRank") === "5") {
+        if (e.target.getAttribute("dataRank") === "6") {
+          let currentIdx = parseInt(this.state.selectedPiece.getAttribute("dataIndexnumber"), 10)
+          if (parseInt(e.target.getAttribute("dataIndexnumber"), 10) === currentIdx+1) {
+            array1.splice(currentIdx+1, 1, 0)
+          }
+          else if (parseInt(e.target.getAttribute("dataIndexnumber"), 10) === currentIdx-1) {
+            array1.splice(currentIdx-1, 1, 0)
+          }
+        }
+      }
+    }
+    if (this.state.selectedPiece.getAttribute("dataValue") === "2") {
+      if (this.state.selectedPiece.getAttribute("dataRank") === "4") {
+        if (e.target.getAttribute("dataRank") === "3") {
+          let currentIdx = parseInt(this.state.selectedPiece.getAttribute("dataIndexnumber"), 10)
+          if (parseInt(e.target.getAttribute("dataIndexnumber"), 10) === currentIdx+1) {
+            array1.splice(currentIdx+1, 1, 0)
+          }
+          else if (parseInt(e.target.getAttribute("dataIndexnumber"), 10) === currentIdx-1) {
+            array1.splice(currentIdx-1, 1, 0)
+          }
+        }
+      }
+    }
+  }
+
+  allowCastling(e, array1, array2) {
     if (this.state.selectedPiece.getAttribute("dataValue") === "11") {
       if (this.state.selectedPiece.getAttribute("dataIndexnumber") === "4") {
         if (e.target.getAttribute("dataIndexnumber") === "2") {
@@ -930,32 +1029,24 @@ class App extends Component {
         }
       }
     }
-    array1.splice(this.state.selectedPiece.getAttribute("dataIndexnumber"), 1, 0)
-    array2.splice(e.target.getAttribute("dataIndexnumber"), 1, parseInt(this.state.selectedPiece.getAttribute("dataValue"), 10))
-    this.resolveMove()
-    if (this.findWhiteKing()) {
-      if (this.searchWhiteMoves()) {
-        this.setState({winner: 1}, function() {
-          this.endGame();          
-        })
+  }
+
+  checkEnPassant(piece, arr1, arr2, idx) {
+    if (piece === 2) {
+      if (arr1 === 7) {
+        if (arr2 === 5) {
+          this.setState({enPassant: idx})
+        }
       }
-      else console.log("white is in check")
     }
-    if (this.findBlackKing()) {
-      if (this.searchBlackMoves()) {
-        this.setState({winner: 2}, function() {
-          this.endGame();          
-        })
+    else if (piece === 1) {
+      if (arr1 === 2) {
+        if (arr2 === 4) {
+          this.setState({enPassant: idx})
+        }
       }
-      else console.log("black is in check")
     }
-    this.state.turnCounter === 1 ? this.setState({turnCounter: 0}, function() {
-      this.checkForStalemate();
-    }) : this.setState({turnCounter: 1}, function() {
-      this.checkForStalemate();
-    });
-    this.checkForDraw();
-    this.checkCastling();
+    else this.setState({enPassant: null})
   }
 
   checkCastling() {
