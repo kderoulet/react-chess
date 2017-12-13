@@ -7,10 +7,10 @@ const BoardSquare = (props) => {
     if (props.rank % 2) {
         if (props.index % 2) {
             color = "white"
-        } else color = "lightgrey"
+        } else color = "lightblue"
     } else {
         if (props.index % 2) {
-            color = "lightgrey"
+            color = "lightblue"
         } else color = "white"
     }
     switch (props.squareVal) {

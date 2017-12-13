@@ -1,5 +1,6 @@
 import React from 'react'
 import ChessBoard from '../components/ChessBoard'
+import SideBar from '../components/SideBar'
 
 const Game = (props) => {
     return(
@@ -21,7 +22,9 @@ const Game = (props) => {
             </div>
             </div>
             <div className='col'>
-                words
+                <SideBar
+                turnCounter={props.turnCounter}
+                />
             </div>
         </div>
     )

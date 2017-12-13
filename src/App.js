@@ -44,7 +44,9 @@ class App extends Component {
         whiteKingLeftCastle: true,
         blackKingRightCastle: true,
         blackKingLeftCastle: true,
-        enPassant: null
+        enPassant: null,
+        promoteWhite: false,
+        promoteBlack: false
     }
   }
 
@@ -197,7 +199,6 @@ class App extends Component {
     }
     if (threatened2 > 0 && threatened2 % 2 === 1) {
         if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
-          console.log('hits')
           nextRank[currentIndex+1] += 100
           counter++        
         }
@@ -205,7 +206,6 @@ class App extends Component {
     if (threatened1 === 0 && this.state.enPassant === currentIndex-1) {
       if (currentRank === 4) {
         if (this.checkMove(pieceValue, rankArray, currentIndex, nextRank, currentIndex+1)) {
-          console.log('hittin?')
           nextRank[currentIndex-1] += 100
           counter++
         }
@@ -944,7 +944,7 @@ class App extends Component {
     if (this.findWhiteKing()) {
       if (this.searchWhiteMoves()) {
         this.setState({winner: 1}, function() {
-          this.endGame();          
+          this.endGame();
         })
       }
       else console.log("white is in check")
@@ -2051,6 +2051,7 @@ class App extends Component {
             <Route exact path='/game' render={() =>
               <Game
                 handleMovement={this.handleMovement}
+                turnCounter={this.state.turnCounter}
                 rankEight={this.state.rankEight}
                 rankSeven={this.state.rankSeven}
                 rankSix={this.state.rankSix}
