@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import './App.css';
 import Landing from './pages/Landing'
 import Game from './pages/Game'
+const io = require('socket.io-client');  
 
 class App extends Component {
   constructor(props) {
@@ -10,6 +11,10 @@ class App extends Component {
     this.state=Object.assign(
       this.getInitialBoardState()
     )
+    this.socket = io.connect('http://localhost:3000');
+    this.socket.on('update-state', (data) => {
+      this.setState(data)
+    });
   }
 
   getInitialBoardState() {
@@ -68,12 +73,20 @@ class App extends Component {
     }
   }
 
+  async updateSocket() {
+    await(this.allowMovement)
+    this.socket.emit('update', this.state)    
+  }
+
   handleMovement = (e) => {
       if (this.state.selectedPiece) {
         if (parseInt(e.target.getAttribute("dataValue"), 10) < 100) {
           this.resolveMove();          
         }
-        else this.allowMovement(e)
+        else {
+          this.allowMovement(e)
+          this.updateSocket()
+        }
       }
       else {
         if (e.target.getAttribute("dataValue") % 2 === this.state.turnCounter) {
@@ -975,15 +988,18 @@ class App extends Component {
       }
       else this.setState({blackInCheck: true})
     } else this.setState({blackInCheck: false})
-    this.state.turnCounter === 1 ? this.setState({turnCounter: 0}, function() {
-      this.checkForStalemate();
-    }) : this.setState({turnCounter: 1}, function() {
-      this.checkForStalemate();
-    });
+    if (this.state.turnCounter === 1) {
+      this.setState({turnCounter: 0}, function() {this.checkForStalemate()})
+    } else if (this.state.turnCounter === 0) {
+      this.setState({turnCounter: 1}, function() {this.checkForStalemate()})
+    }
     this.checkForDraw();
     this.checkCastling();
     this.checkEnPassant(movingPiece, arrayOneNum, arrayTwoNum, movingPieceIdx);
     this.checkPromotion();
+    delete this.state.selectedPiece;
+    this.setState({selectedPiece: false})
+      // this.updateSocket()
   }
 
   allowEnPassant(e, array1, array2) {
@@ -1349,14 +1365,14 @@ class App extends Component {
     if (this.state.winner) {
       if (this.state.winner === 1) {
         console.log('white wins')
-        this.setState({gameOver: true})
+        this.setState({gameOver: true, turnCounter: 200})
       } else {
         console.log('black wins')
-        this.setState({gameOver: true})
+        this.setState({gameOver: true, turnCounter: 200})
       } 
     } else {
       console.log('no one wins')
-      this.setState({gameOver: true})
+      this.setState({gameOver: true, turnCounter: 200})
     }
   }
 

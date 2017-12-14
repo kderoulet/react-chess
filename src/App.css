@@ -10,4 +10,5 @@ td {
   font-size: 30px;
   text-align: center;
   color: black;
+  cursor: pointer;
 }
