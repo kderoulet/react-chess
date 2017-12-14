@@ -5,10 +5,10 @@ const SideBar = (props) => {
     let content2
     if (props.gameOver) {
         if (props.winner === 1) {
-            content1 = "White is the Winner"
+            content1 = "White Wins"
         }
         else if (props.winner === 2) {
-            content1 = "Black is the Winner"
+            content1 = "Black Wins"
         }
         else content1 = "Draw"
     }
@@ -29,9 +29,10 @@ const SideBar = (props) => {
     }
     return(
         <div>
-            {content1}
-            <br/>
-            {content2}
+            <div style={{fontSize: 50, textAlign: "left"}}>10:00</div>
+            <div style={{fontSize: 40, textAlign: "left"}}>{content1}</div>
+            <div style={{fontSize: 40, textAlign: "left"}}>{content2}</div>
+            <div style={{fontSize: 50, textAlign: "left"}}>10:00</div>
         </div>
     )
 }

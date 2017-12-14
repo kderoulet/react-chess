@@ -25,6 +25,7 @@ const PromotionTile = (props) => {
         <td 
         datavalue={props.val}
         onClick={(e) => {props.handleSelection(e)}}
+        style={{backgroundColor: "white"}}
         >
             {content}
         </td>

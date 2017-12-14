@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import './App.css';
 import Landing from './pages/Landing'
-import Game from './pages/Game'
+import LocalGame from './pages/LocalGame'
+import Lobby from './pages/Lobby'
 const io = require('socket.io-client');  
 
 class App extends Component {
@@ -16,6 +17,7 @@ class App extends Component {
       this.setState(data)
     });
   }
+  // 6, 14-17, 77-80, 89
 
   getInitialBoardState() {
     return {
@@ -999,7 +1001,6 @@ class App extends Component {
     this.checkPromotion();
     delete this.state.selectedPiece;
     this.setState({selectedPiece: false})
-      // this.updateSocket()
   }
 
   allowEnPassant(e, array1, array2) {
@@ -2095,8 +2096,8 @@ class App extends Component {
               <Landing
               />
             }/>
-            <Route exact path='/game' render={() =>
-              <Game
+            <Route exact path='/localgame' render={() =>
+              <LocalGame
                 handleSelection={this.handleSelection}
                 handleMovement={this.handleMovement}
                 whiteInCheck={this.state.whiteInCheck}
@@ -2114,6 +2115,10 @@ class App extends Component {
                 rankThree={this.state.rankThree}
                 rankTwo={this.state.rankTwo}
                 rankOne={this.state.rankOne}
+              />
+            }/>
+            <Route exact path='/lobby' render={() =>
+              <Lobby
               />
             }/>
           </Switch>

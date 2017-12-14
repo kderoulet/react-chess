@@ -4,8 +4,18 @@ import {Link} from 'react-router-dom'
 const Landing = (props) => {
     return(
         <div>
-            <Link className='btn' to='/game'>
-            Start a new game
+            Welcome to React Chess
+            <br/>
+            <Link className='btn btn-sm' to='/localgame'>
+            <button>New Local Game</button>
+            </Link>
+            <br/>
+            <Link className='btn btn-sm' to='/lobby'>
+            <button>New Online Versus Game</button>
+            </Link>
+            <br/>
+            <Link className="button btn-sm" to="/signin">
+            <button>Sign In With Google</button>
             </Link>
         </div>
     )
