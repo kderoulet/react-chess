@@ -15,7 +15,7 @@ const Landing = (props) => {
             </Link>
             <br/>
             <Link className="button btn-sm" to="/signin">
-            <button>Sign In With Google</button>
+            <button>Sign In or Sign Up</button>
             </Link>
         </div>
     )

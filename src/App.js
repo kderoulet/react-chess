@@ -12,10 +12,12 @@ class App extends Component {
     this.state=Object.assign(
       this.getInitialBoardState()
     )
-    this.socket = io.connect('http://localhost:3000');
-    this.socket.on('update-state', (data) => {
-      this.setState(data)
-    });
+    if (this.state.matchedGame) {
+      this.socket = io.connect('http://localhost:3000');
+      this.socket.on('update-state', (data) => {
+        this.setState(data)
+      });
+    }
   }
   // 6, 14-17, 77-80, 89
 
@@ -56,7 +58,8 @@ class App extends Component {
         promoteBlack: false,
         whiteInCheck: false,
         blackInCheck: false,
-        gameOver: false
+        gameOver: false,
+        matchedGame: true
     }
   }
 
@@ -87,7 +90,9 @@ class App extends Component {
         }
         else {
           this.allowMovement(e)
-          this.updateSocket()
+          if (this.state.matchedGame) {
+            this.updateSocket()            
+          }
         }
       }
       else {
