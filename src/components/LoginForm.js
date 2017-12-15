@@ -18,6 +18,7 @@ class LoginForm extends Component {
   }
 
   handleSubmit = (e) => {
+    console.log(this.state)
     e.preventDefault();
     userService.login(this.state)
       .then(() => {
@@ -25,7 +26,7 @@ class LoginForm extends Component {
         this.props.history.push('/');
       })
       .catch(err => {
-        this.setState({message: "Invalid Credentials"});
+        // this.setState({message: "Invalid Credentials"});
         console.log('this sucks')
         console.log(err)
         console.log(this.state)
@@ -35,7 +36,7 @@ class LoginForm extends Component {
   render() {
     return (
       <div>
-        <header className="header-footer">Log In</header>
+        <header style={{fontSize: 40}}>Log In</header>
         <form className="form-horizontal" onSubmit={this.handleSubmit} >
           <div className="form-group">
             <div className="col-sm-12">
@@ -50,10 +51,10 @@ class LoginForm extends Component {
           <div className="form-group">
             <div className="col-sm-12 text-center">
               <button className="btn btn-info btn-block">Log In</button>
-              <Link to='/'>Cancel</Link>
               <div style={{color: "pink"}}>{this.state.message}</div>
               <br/>
               <Link to='/signup'><button className="btn btn-info btn-block">First Time Here? Sign Up!</button></Link>
+              <Link to='/' style={{fontSize: 30}}>Cancel</Link>
             </div>
           </div>
         </form>

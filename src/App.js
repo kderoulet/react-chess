@@ -13,13 +13,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state= {
-      user: {}
-    }
-    if (this.state.matchedGame) {
-      this.socket = io.connect('http://localhost:3000');
-      this.socket.on('update-state', (data) => {
-        this.setState(data)
-      });
+      user: {},
+      matchedGame: true
     }
   }
 
@@ -39,6 +34,56 @@ class App extends Component {
   }
 
   // all chess logic below
+
+  getInitialBoardStateLinked() {
+    this.setState({
+        rankEight: [8, 6, 4, 10, 12, 4, 6, 8],
+        rankSeven: [2, 2, 2, 2, 2, 2, 2, 2],
+        rankSix: [0, 0, 0, 0, 0, 0, 0, 0],
+        rankFive: [0, 0, 0, 0, 0, 0, 0, 0],
+        rankFour: [0, 0, 0, 0, 0, 0, 0, 0],
+        rankThree: [0, 0, 0, 0, 0, 0, 0, 0],
+        rankTwo: [1, 1, 1, 1, 1, 1, 1, 1],
+        rankOne: [7, 5, 3, 9, 11, 3, 5, 7],
+        selectedPiece: false,
+        turnCounter: 1,
+        winner: null,
+        boardMemoryOne: [],
+        boardMemoryTwo: [],
+        boardMemoryThree: [],
+        boardMemoryFour: [],
+        boardMemoryFive: [],
+        boardMemorySix: [],
+        boardMemorySeven: [],
+        boardMemoryEight: [],
+        boardMemoryNine: [],
+        boardMemoryTen: [],
+        boardMemoryEleven: [],
+        boardMemoryTwelve: [],
+        twelveTurnCounter: 0,
+        hundredTurnMemory: [],
+        hundredTurnCounter: 1,
+        whiteKingRightCastle: true,
+        whiteKingLeftCastle: true,
+        blackKingRightCastle: true,
+        blackKingLeftCastle: true,
+        enPassant: null,
+        promoteWhite: false,
+        promoteBlack: false,
+        whiteInCheck: false,
+        blackInCheck: false,
+        gameOver: false,
+        matchedGame: true,        
+        user1: null,
+        user2: null
+    }, function() {
+      if (this.state.matchedGame) {
+      this.socket = io.connect('http://localhost:3000');
+      this.socket.on('update-state', (data) => {
+        this.setState(data)
+      });
+    }})
+  }
 
   getInitialBoardState() {
     this.setState({
@@ -78,13 +123,13 @@ class App extends Component {
         whiteInCheck: false,
         blackInCheck: false,
         gameOver: false,
-        matchedGame: false,
+        matchedGame: false,        
         user1: null,
         user2: null
     })
   }
 
-  
+
 
   handleSelection = (e) => {
     if (this.state.promoteWhite) {

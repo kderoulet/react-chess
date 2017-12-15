@@ -29,10 +29,8 @@ const SideBar = (props) => {
     }
     return(
         <div>
-            <div style={{fontSize: 50, textAlign: "left"}}>10:00</div>
             <div style={{fontSize: 40, textAlign: "left"}}>{content1}</div>
             <div style={{fontSize: 40, textAlign: "left"}}>{content2}</div>
-            <div style={{fontSize: 50, textAlign: "left"}}>10:00</div>
         </div>
     )
 }

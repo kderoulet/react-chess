@@ -1,6 +1,7 @@
 .App {
   text-align: center;
-  color: #363636
+  color: #363636;
+  font-family: 'VT323', monospace;  
 }
 
 body {

@@ -1,11 +1,13 @@
 const express = require('express');
 const path = require('path');
 const logger = require('morgan');
-const app = express();
-const http = require('http').Server(app);
 const bodyParser = require('body-parser');
 require('dotenv').config();
 require('./config/db')
+
+const app = express();
+const http = require('http').Server(app);
+
 
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'build')));
