@@ -45,7 +45,7 @@ var port = process.env.PORT || 3001;
 // const server = app.listen(port, (err) => {
 //     console.log(`Express app running on port ${port}`);
 //   });
-http.listen(3001, function() {
+http.listen(port, function() {
     console.log('listening on *:3001');
  });
  
