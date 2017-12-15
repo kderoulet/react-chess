@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Switch, Route, Redirect} from 'react-router-dom';
 import './App.css';
 import Landing from './pages/Landing'
 import LocalGame from './pages/LocalGame'
@@ -18,6 +18,12 @@ class App extends Component {
       user: {},
       matchedGame: false
     }
+    // if (this.state.matchedGame) {
+    //   this.socket = io()
+    //   this.socket.on('update-game', function(state) {
+    //     this.setState(state)
+    //   })
+    // }
     // this.socket = io();  
     // this.socket.on('connectToRoom',function(data) {
     //   this.getInitialBoardStateMatched(white, black)
@@ -44,7 +50,7 @@ class App extends Component {
 
   // all chess logic below
 
-  getInitialBoardStateMatched = (white, black) => {
+  getInitialBoardStateMatched = () => {
     this.setState({
         rankEight: [8, 6, 4, 10, 12, 4, 6, 8],
         rankSeven: [2, 2, 2, 2, 2, 2, 2, 2],
@@ -83,8 +89,6 @@ class App extends Component {
         blackInCheck: false,
         gameOver: false,
         matchedGame: true,        
-        white: white,
-        black: black
     })
   }
 
@@ -127,8 +131,6 @@ class App extends Component {
         blackInCheck: false,
         gameOver: false,
         matchedGame: false,        
-        white: null,
-        black: null
     })
   }
 
@@ -147,10 +149,10 @@ class App extends Component {
     }
   }
 
-  async updateSocket() {
-    await(this.allowMovement)
-    this.socket.emit('update', this.state)
-  }
+  // async updateSocket() {
+  //   await(this.allowMovement)
+  //   this.socket.emit('update', this.state)
+  // }
 
   handleMovement = (e) => {
       if (this.state.selectedPiece) {
@@ -159,9 +161,9 @@ class App extends Component {
         }
         else {
           this.allowMovement(e)
-          if (this.state.matchedGame) {
-            this.updateSocket()            
-          }
+          // if (this.state.matchedGame) {
+          //   this.updateSocket()            
+          // }
         }
       }
       else {
@@ -2177,6 +2179,7 @@ class App extends Component {
               user={this.state.user}
               handleLogout={this.handleLogout}
               getInitialBoardState={this.getInitialBoardState}
+              getInitialBoardStateMatched={this.getInitialBoardState}
               />
             }/>
             <Route exact path='/localgame' render={() =>
@@ -2202,6 +2205,7 @@ class App extends Component {
               />
             }/>
             <Route exact path='/matchedgame' render={() =>
+              userService.getUser() ?
               <MatchedGame
                 matchedGame={this.state.matchedGame}
                 handleSelection={this.handleSelection}
@@ -2223,6 +2227,8 @@ class App extends Component {
                 rankTwo={this.state.rankTwo}
                 rankOne={this.state.rankOne}
               />
+              :
+              <Redirect to='/login'/>
             }/>
             <Route exact path='/login' render={(props) =>
               <Login

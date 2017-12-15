@@ -5,7 +5,7 @@ const Landing = (props) => {
     let landing = props.user ?
     <div>
     <div style={{fontSize: 60}}>React Chess</div>
-    <div>Welcome, {props.user.name}</div></div>:
+    <div style={{fontSize: 30}}>Welcome, {props.user.name}</div></div>:
     <div><div style={{fontSize: 60}}>React Chess</div>
     <div style={{fontSize: 30}}>Welcome, Guest</div></div>;
     let bottomButton = props.user ? 
