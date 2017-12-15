@@ -7,14 +7,24 @@ import MatchedGame from './pages/MatchedGame'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import userService from './utils/userService';
+// const io = require('socket.io-client');
+// var white
+// var black
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state= {
       user: {},
-      matchedGame: true
+      matchedGame: false
     }
+    // this.socket = io();  
+    // this.socket.on('connectToRoom',function(data) {
+    //   this.getInitialBoardStateMatched(white, black)
+    // })
+    // this.socket.on('update-game', function(state) {
+    //   this.setState(state)
+    // })
   }
 
   // user logic
@@ -34,7 +44,7 @@ class App extends Component {
 
   // all chess logic below
 
-  getInitialBoardStateMatched =(white, black) => {
+  getInitialBoardStateMatched = (white, black) => {
     this.setState({
         rankEight: [8, 6, 4, 10, 12, 4, 6, 8],
         rankSeven: [2, 2, 2, 2, 2, 2, 2, 2],
@@ -78,7 +88,7 @@ class App extends Component {
     })
   }
 
-  getInitialBoardState() {
+  getInitialBoardState = () => {
     this.setState({
         rankEight: [8, 6, 4, 10, 12, 4, 6, 8],
         rankSeven: [2, 2, 2, 2, 2, 2, 2, 2],
@@ -117,8 +127,8 @@ class App extends Component {
         blackInCheck: false,
         gameOver: false,
         matchedGame: false,        
-        user1: null,
-        user2: null
+        white: null,
+        black: null
     })
   }
 
@@ -139,13 +149,7 @@ class App extends Component {
 
   async updateSocket() {
     await(this.allowMovement)
-    this.setState({updateTime: true})
-  }
-
-  getStateFromSocket = (data) => {
-    this.setState({updateTime: false}, function() {
-      this.setState({data})
-    })
+    this.socket.emit('update', this.state)
   }
 
   handleMovement = (e) => {
@@ -1435,14 +1439,11 @@ class App extends Component {
   endGame() {
     if (this.state.winner) {
       if (this.state.winner === 1) {
-        console.log('white wins')
         this.setState({gameOver: true, turnCounter: 200})
       } else {
-        console.log('black wins')
         this.setState({gameOver: true, turnCounter: 200})
       } 
     } else {
-      console.log('no one wins')
       this.setState({gameOver: true, turnCounter: 200})
     }
   }
@@ -2180,6 +2181,7 @@ class App extends Component {
             }/>
             <Route exact path='/localgame' render={() =>
               <LocalGame
+                getInitialBoardState={this.getInitialBoardState}
                 handleSelection={this.handleSelection}
                 handleMovement={this.handleMovement}
                 whiteInCheck={this.state.whiteInCheck}
@@ -2201,11 +2203,7 @@ class App extends Component {
             }/>
             <Route exact path='/matchedgame' render={() =>
               <MatchedGame
-                state={this.state}
-                getStateFromSocket={this.getStateFromSocket}
-                updateTime={this.state.updateTime}
                 matchedGame={this.state.matchedGame}
-                getInitialBoardStateMatched={this.getInitialBoardStateMatched}
                 handleSelection={this.handleSelection}
                 handleMovement={this.handleMovement}
                 user={this.state.user}

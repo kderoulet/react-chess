@@ -18,7 +18,6 @@ class LoginForm extends Component {
   }
 
   handleSubmit = (e) => {
-    console.log(this.state)
     e.preventDefault();
     userService.login(this.state)
       .then(() => {

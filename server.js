@@ -24,7 +24,6 @@ io.on('connection', function(socket) {
        io.sockets.in("room-"+roomno).emit('update-game', state)
    })
    socket.on('disconnect', function () {
-    console.log('A user disconnected');
  });
 })
 
@@ -42,10 +41,6 @@ app.get('/*', function(req, res) {
 
 var port = process.env.PORT || 3001;
 
-// const server = app.listen(port, (err) => {
-//     console.log(`Express app running on port ${port}`);
-//   });
 http.listen(port, function() {
-    console.log('listening on *:3001');
  });
  

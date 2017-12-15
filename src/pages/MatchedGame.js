@@ -3,34 +3,13 @@ import ChessBoard from '../components/ChessBoard'
 import SideBar from '../components/SideBar'
 import {Link} from 'react-router-dom'
 import PromotionBox from '../components/PromotionBox'
-const io = require('socket.io-client');  
 
 
 const MatchedGame = (props) => {
-    let white
-    let black
-    let matched = props.matchedGame ? true : false
-    var socket = io();
-    socket.on('connectToRoom',function(data) {
-        if (!white) white=data;
-        else {
-            black=data
-            socket.emit('assign-players', white, black)
-        }
-    })
-    socket.on('start-game', function(white, black) {
-        props.getInitialBoardStateMatched(white, black)
-    })
-    socket.on('update-game', function(state) {
-        props.getStateFromSocket(state)
-    })
-        if (props.updateTime) {
-            socket.emit('update', props.state)
-        }
-        
-    // socket.emit('update', props.state)
-    let pageDisplay1 = matched ? "none" : "inline";
-    let pageDisplay2 = matched ? "inline" : "none";
+    let matched = props.matchedGame ? true : false    
+    
+    let pageDisplay1 = matched ? "none" : "block";
+    let pageDisplay2 = matched ? "block" : "none";
 
     return(
         <div>
@@ -76,3 +55,5 @@ const MatchedGame = (props) => {
     
 }
 export default MatchedGame
+
+

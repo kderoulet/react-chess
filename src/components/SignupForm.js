@@ -25,7 +25,6 @@ class SignupForm extends Component {
     userService.signup(this.state)
       .then(() => {
         this.props.handleSignup();
-        console.log(this.props)
         this.props.history.push('/');
       })
       .catch(err => this.props.updateMessage(err.message));
@@ -38,7 +37,7 @@ class SignupForm extends Component {
   render() {
     return (
       <div>
-        <header className="header-footer">Sign Up</header>
+        <header style={{fontSize: 40}}>Sign Up</header>
         <form className="form-horizontal" onSubmit={this.handleSubmit} >
           <div className="form-group">
             <div className="col-sm-12">
@@ -63,7 +62,7 @@ class SignupForm extends Component {
           <div className="form-group">
             <div className="col-sm-12 text-center">
               <button className="btn btn-info btn-block" disabled={this.isFormInvalid()}>Sign Up</button>&nbsp;&nbsp;
-              <Link to='/'>Cancel</Link>
+              <Link to='/' style={{fontSize: 30}}>Cancel</Link>
             </div>
           </div>
         </form>

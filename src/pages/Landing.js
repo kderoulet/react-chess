@@ -4,10 +4,10 @@ import {Link} from 'react-router-dom'
 const Landing = (props) => {
     let landing = props.user ?
     <div>
-    <div style={{fontSize: 40}}>React Chess</div>
+    <div style={{fontSize: 60}}>React Chess</div>
     <div>Welcome, {props.user.name}</div></div>:
-    <div><div style={{fontSize: 40}}>React Chess</div>
-    <div>Welcome, Guest</div></div>;
+    <div><div style={{fontSize: 60}}>React Chess</div>
+    <div style={{fontSize: 30}}>Welcome, Guest</div></div>;
     let bottomButton = props.user ? 
     <Link to="" onClick={props.handleLogout}>
     <button className='btn btn-info btn-block'>Sign Out</button>

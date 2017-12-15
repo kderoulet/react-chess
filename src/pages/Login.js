@@ -3,7 +3,7 @@ import LoginForm from '../components/LoginForm';
 
 const Login = (props) => {
   return (
-    <div>
+    <div style={{margin: "0 30% 0 30%", minWidth: 240}}>
       <LoginForm
         {...props}
       />

@@ -29,6 +29,7 @@ const LocalGame = (props) => {
                     promoteBlack={props.promoteBlack}
                 />
                 <SideBar
+                    getInitialBoardState={props.getInitialBoardState}
                     turnCounter={props.turnCounter}
                     whiteInCheck={props.whiteInCheck}
                     blackInCheck={props.blackInCheck}

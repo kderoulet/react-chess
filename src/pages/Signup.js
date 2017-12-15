@@ -13,7 +13,7 @@ class Signup extends Component {
 
   render() {
     return (
-      <div>
+      <div style={{margin: "0 30% 0 30%", minWidth: 240}}>
         <SignupForm
           {...this.props}
           updateMessage={this.updateMessage}

@@ -4,6 +4,10 @@
   font-family: 'VT323', monospace;  
 }
 
+button {
+  font-family: 'VT323', monospace;    
+}
+
 body {
   background-color: #F3F5F8
 }
