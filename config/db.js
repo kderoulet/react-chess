@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 mongoose.promise = global.Promise;
 
-mongoose.connect("mongodb://localhost/chess", {useMongoClient: true})
+mongoose.connect(process.env.DATABASE_URL, {useMongoClient: true})
 
 const db = mongoose.connection;
 

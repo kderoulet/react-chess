@@ -4,14 +4,17 @@ import './App.css';
 import Landing from './pages/Landing'
 import LocalGame from './pages/LocalGame'
 import Lobby from './pages/Lobby'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
+import userService from './utils/userService';
 const io = require('socket.io-client');  
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state=Object.assign(
-      this.getInitialBoardState()
-    )
+    this.state= {
+      user: {}
+    }
     if (this.state.matchedGame) {
       this.socket = io.connect('http://localhost:3000');
       this.socket.on('update-state', (data) => {
@@ -19,10 +22,26 @@ class App extends Component {
       });
     }
   }
-  // 6, 14-17, 77-80, 89
+
+  // user logic
+
+  handleSignup = () => {
+    this.setState({user: userService.getUser()});
+  }
+
+  handleLogout = () => {
+    userService.logout();
+    this.setState({user: null});
+  }
+
+  handleLogin = () => {
+    this.setState({user: userService.getUser()});
+  }
+
+  // all chess logic below
 
   getInitialBoardState() {
-    return {
+    this.setState({
         rankEight: [8, 6, 4, 10, 12, 4, 6, 8],
         rankSeven: [2, 2, 2, 2, 2, 2, 2, 2],
         rankSix: [0, 0, 0, 0, 0, 0, 0, 0],
@@ -59,9 +78,13 @@ class App extends Component {
         whiteInCheck: false,
         blackInCheck: false,
         gameOver: false,
-        matchedGame: true
-    }
+        matchedGame: false,
+        user1: null,
+        user2: null
+    })
   }
+
+  
 
   handleSelection = (e) => {
     if (this.state.promoteWhite) {
@@ -2092,6 +2115,15 @@ class App extends Component {
     }
   }
 
+  // lifecycle methods
+
+
+  componentWillMount() {
+    let user = userService.getUser();
+    this.setState({user});
+    this.getInitialBoardState()    
+  }
+
   render() {
     return (
       <div className="App container">
@@ -2099,6 +2131,8 @@ class App extends Component {
           <Switch>
             <Route exact path='/' render={() =>
               <Landing
+              user={this.state.user}
+              handleLogout={this.handleLogout}
               />
             }/>
             <Route exact path='/localgame' render={() =>
@@ -2124,6 +2158,18 @@ class App extends Component {
             }/>
             <Route exact path='/lobby' render={() =>
               <Lobby
+              />
+            }/>
+            <Route exact path='/login' render={(props) =>
+              <Login
+              {...props}
+              handleLogin={this.handleLogin}
+              />
+            }/>
+            <Route exact path='/signup' render={(props) =>
+              <Signup
+              {...props}
+              handleSignup={this.handleSignup}
               />
             }/>
           </Switch>

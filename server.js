@@ -3,13 +3,16 @@ const path = require('path');
 const logger = require('morgan');
 const app = express();
 const http = require('http').Server(app);
+const bodyParser = require('body-parser');
 require('dotenv').config();
-
+require('./config/db')
 
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, 'build')));
 
-app.use('/api', require('./routes/api'));
+app.use(bodyParser.json());
+
+app.use('/api/users', require('./routes/api'));
 
 app.get('/*', function(req, res) {
     res.sendFile(__dirname, 'build', '/index.html')

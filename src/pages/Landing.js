@@ -2,21 +2,26 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 
 const Landing = (props) => {
+
     return(
-        <div>
+        <div style={{margin: "0 30% 0 30%", minWidth: 240}}>
             Welcome to React Chess
             <br/>
-            <Link className='btn btn-sm' to='/localgame'>
-            <button>New Local Game</button>
+            <Link to='/localgame'>
+            <button className='btn btn-info btn-block'>New Local Game</button>
             </Link>
             <br/>
-            <Link className='btn btn-sm' to='/lobby'>
-            <button>New Online Versus Game</button>
+            <Link to='/lobby'>
+            <button className='btn btn-info btn-block'>New Online Versus Game</button>
             </Link>
             <br/>
-            <Link className="button btn-sm" to="/signin">
-            <button>Sign In or Sign Up</button>
+            {props.user ? <Link to="/login">
+            <button className='btn btn-info btn-block'>Sign In or Sign Up</button>
             </Link>
+            :
+            <Link to="" onClick={props.handleLogout}>
+            <button className='btn btn-info btn-block'>Sign Out</button>
+            </Link> }
         </div>
     )
 }
