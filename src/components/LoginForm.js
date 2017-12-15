@@ -26,10 +26,7 @@ class LoginForm extends Component {
         this.props.history.push('/');
       })
       .catch(err => {
-        // this.setState({message: "Invalid Credentials"});
-        console.log('this sucks')
-        console.log(err)
-        console.log(this.state)
+        this.setState({message: "Invalid Credentials"});
       })
   }
 

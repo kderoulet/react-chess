@@ -3,11 +3,10 @@ import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 import './App.css';
 import Landing from './pages/Landing'
 import LocalGame from './pages/LocalGame'
-import Lobby from './pages/Lobby'
+import MatchedGame from './pages/MatchedGame'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import userService from './utils/userService';
-const io = require('socket.io-client');  
 
 class App extends Component {
   constructor(props) {
@@ -35,7 +34,7 @@ class App extends Component {
 
   // all chess logic below
 
-  getInitialBoardStateLinked() {
+  getInitialBoardStateMatched =(white, black) => {
     this.setState({
         rankEight: [8, 6, 4, 10, 12, 4, 6, 8],
         rankSeven: [2, 2, 2, 2, 2, 2, 2, 2],
@@ -74,15 +73,9 @@ class App extends Component {
         blackInCheck: false,
         gameOver: false,
         matchedGame: true,        
-        user1: null,
-        user2: null
-    }, function() {
-      if (this.state.matchedGame) {
-      this.socket = io.connect('http://localhost:3000');
-      this.socket.on('update-state', (data) => {
-        this.setState(data)
-      });
-    }})
+        white: white,
+        black: black
+    })
   }
 
   getInitialBoardState() {
@@ -129,8 +122,6 @@ class App extends Component {
     })
   }
 
-
-
   handleSelection = (e) => {
     if (this.state.promoteWhite) {
       let position = this.state.rankEight.indexOf(1)      
@@ -148,7 +139,13 @@ class App extends Component {
 
   async updateSocket() {
     await(this.allowMovement)
-    this.socket.emit('update', this.state)    
+    this.setState({updateTime: true})
+  }
+
+  getStateFromSocket = (data) => {
+    this.setState({updateTime: false}, function() {
+      this.setState({data})
+    })
   }
 
   handleMovement = (e) => {
@@ -2178,6 +2175,7 @@ class App extends Component {
               <Landing
               user={this.state.user}
               handleLogout={this.handleLogout}
+              getInitialBoardState={this.getInitialBoardState}
               />
             }/>
             <Route exact path='/localgame' render={() =>
@@ -2201,8 +2199,31 @@ class App extends Component {
                 rankOne={this.state.rankOne}
               />
             }/>
-            <Route exact path='/lobby' render={() =>
-              <Lobby
+            <Route exact path='/matchedgame' render={() =>
+              <MatchedGame
+                state={this.state}
+                getStateFromSocket={this.getStateFromSocket}
+                updateTime={this.state.updateTime}
+                matchedGame={this.state.matchedGame}
+                getInitialBoardStateMatched={this.getInitialBoardStateMatched}
+                handleSelection={this.handleSelection}
+                handleMovement={this.handleMovement}
+                user={this.state.user}
+                whiteInCheck={this.state.whiteInCheck}
+                blackInCheck={this.state.blackInCheck}
+                gameOver={this.state.gameOver}
+                winner={this.state.winner}
+                turnCounter={this.state.turnCounter}
+                promoteWhite={this.state.promoteWhite}
+                promoteBlack={this.state.promoteBlack}
+                rankEight={this.state.rankEight}
+                rankSeven={this.state.rankSeven}
+                rankSix={this.state.rankSix}
+                rankFive={this.state.rankFive}
+                rankFour={this.state.rankFour}
+                rankThree={this.state.rankThree}
+                rankTwo={this.state.rankTwo}
+                rankOne={this.state.rankOne}
               />
             }/>
             <Route exact path='/login' render={(props) =>

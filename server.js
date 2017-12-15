@@ -7,6 +7,26 @@ require('./config/db')
 
 const app = express();
 const http = require('http').Server(app);
+const io = require('socket.io')(http);
+
+var roomno = 1;
+io.on('connection', function(socket) {
+   if (io.nsps['/'].adapter.rooms["room-"+roomno] && io.nsps['/'].adapter.rooms["room-"+roomno].length > 1) {
+    roomno++;
+   }
+   socket.join("room-"+roomno);
+   
+   io.sockets.in("room-"+roomno).emit('connectToRoom', socket.id);
+   socket.on('assign-players', function(white, black) {
+    io.sockets.in("room-"+roomno).emit('start-game', white, black)
+   })
+   socket.on('update', function(state) {
+       io.sockets.in("room-"+roomno).emit('update-game', state)
+   })
+   socket.on('disconnect', function () {
+    console.log('A user disconnected');
+ });
+})
 
 
 app.use(logger('dev'));
@@ -22,7 +42,10 @@ app.get('/*', function(req, res) {
 
 var port = process.env.PORT || 3001;
 
-const server = app.listen(port, (err) => {
-    console.log(`Express app running on port ${port}`);
-  });
-require('./io').attach(server);
+// const server = app.listen(port, (err) => {
+//     console.log(`Express app running on port ${port}`);
+//   });
+http.listen(3001, function() {
+    console.log('listening on *:3001');
+ });
+ 

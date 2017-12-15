@@ -1,12 +1,46 @@
 import React from 'react'
 import ChessBoard from '../components/ChessBoard'
 import SideBar from '../components/SideBar'
-import PromotionBox from '../components/PromotionBox'
 import {Link} from 'react-router-dom'
+import PromotionBox from '../components/PromotionBox'
+const io = require('socket.io-client');  
 
-const LocalGame = (props) => {
+
+const MatchedGame = (props) => {
+    let white
+    let black
+    let matched = props.matchedGame ? true : false
+    var socket = io();
+    socket.on('connectToRoom',function(data) {
+        if (!white) white=data;
+        else {
+            black=data
+            socket.emit('assign-players', white, black)
+        }
+    })
+    socket.on('start-game', function(white, black) {
+        props.getInitialBoardStateMatched(white, black)
+    })
+    socket.on('update-game', function(state) {
+        props.getStateFromSocket(state)
+    })
+        if (props.updateTime) {
+            socket.emit('update', props.state)
+        }
+        
+    // socket.emit('update', props.state)
+    let pageDisplay1 = matched ? "none" : "inline";
+    let pageDisplay2 = matched ? "inline" : "none";
+
     return(
-        <div className='row'>
+        <div>
+            <div style={{display: pageDisplay1}}>
+                <span style={{fontSize: 40}}>Matchmaking</span>
+                <br/>
+                This might take a minute.
+                <br/>
+            </div>
+        <div style={{display: pageDisplay2}}className='row'>
             <div className='col-auto'>    
             <Link to='/' style={{fontSize: 20}}>Back</Link>
             <br/>                
@@ -37,7 +71,8 @@ const LocalGame = (props) => {
                 />
             </div>
         </div>
+    </div>
     )
+    
 }
-
-export default LocalGame
+export default MatchedGame

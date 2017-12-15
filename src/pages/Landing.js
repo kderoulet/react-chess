@@ -20,11 +20,11 @@ const Landing = (props) => {
 
         <div style={{margin: "0 30% 0 30%", minWidth: 240}}>
             {landing}
-            <Link to='/localgame'>
+            <Link to='/localgame' onClick={props.getInitialBoardState}>
             <button className='btn btn-info btn-block'>New Local Game</button>
             </Link>
             <br/>
-            <Link to='/lobby'>
+            <Link to='/matchedgame' onClick={props.getInitialBoardStateMatched}>
             <button className='btn btn-info btn-block'>New Online Versus Game</button>
             </Link>
             <br/>
