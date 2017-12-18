@@ -6,10 +6,9 @@ import PromotionBox from '../components/PromotionBox'
 
 
 const MatchedGame = (props) => {
-    let matched = props.matchedGame ? true : false    
-    
-    let pageDisplay1 = matched ? "none" : "block";
-    let pageDisplay2 = matched ? "block" : "none";
+    props.runSockets();
+    let pageDisplay1 = props.black ? "none" : "default";
+    let pageDisplay2 = props.black ? "default" : "none";
 
     return(
         <div>

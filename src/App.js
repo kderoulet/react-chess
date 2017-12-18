@@ -7,33 +7,30 @@ import MatchedGame from './pages/MatchedGame'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import userService from './utils/userService';
-// const io = require('socket.io-client');
-// var white
-// var black
+const io = require('socket.io-client');
+var white
+var black
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state= {
       user: {},
-      matchedGame: false
+      matchedGame: true
     }
-    // if (this.state.matchedGame) {
-    //   this.socket = io()
-    //   this.socket.on('update-game', function(state) {
-    //     this.setState(state)
-    //   })
-    // }
-    // this.socket = io();  
-    // this.socket.on('connectToRoom',function(data) {
-    //   this.getInitialBoardStateMatched(white, black)
-    // })
-    // this.socket.on('update-game', function(state) {
-    //   this.setState(state)
-    // })
   }
 
   // user logic
+
+  runSockets = () => {
+    this.socket = io();  
+    this.socket.on('connect-to-room', (data) => this.getInitialBoardStateMatched())
+    this.socket.on('connect-to-room', (data) => this.socket.emit('user-info', this.user))
+    this.socket.on('users', (data) => this.setState({white: data[1], black: data[2]}))
+    this.socket.on('users', (data) => console.log("white " + data[1]))
+    this.socket.on('users', (data) => console.log("black " + data[2]))
+    this.socket.on('update-game', state => this.setState(state))
+  }
 
   handleSignup = () => {
     this.setState({user: userService.getUser()});
@@ -88,7 +85,9 @@ class App extends Component {
         whiteInCheck: false,
         blackInCheck: false,
         gameOver: false,
-        matchedGame: true,        
+        matchedGame: true,
+        white: white,
+        black: black      
     })
   }
 
@@ -149,10 +148,10 @@ class App extends Component {
     }
   }
 
-  // async updateSocket() {
-  //   await(this.allowMovement)
-  //   this.socket.emit('update', this.state)
-  // }
+  async updateSocket() {
+    await(this.allowMovement)
+    this.socket.emit('update', this.state)
+  }
 
   handleMovement = (e) => {
       if (this.state.selectedPiece) {
@@ -161,9 +160,9 @@ class App extends Component {
         }
         else {
           this.allowMovement(e)
-          // if (this.state.matchedGame) {
-          //   this.updateSocket()            
-          // }
+          if (this.state.matchedGame) {
+            this.updateSocket()            
+          }
         }
       }
       else {
@@ -2207,6 +2206,9 @@ class App extends Component {
             <Route exact path='/matchedgame' render={() =>
               userService.getUser() ?
               <MatchedGame
+                runSockets={this.runSockets}
+                black={this.state.black}
+                getInitialBoardStateMatched={this.getInitialBoardStateMatched}
                 matchedGame={this.state.matchedGame}
                 handleSelection={this.handleSelection}
                 handleMovement={this.handleMovement}

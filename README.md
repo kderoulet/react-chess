@@ -32,8 +32,7 @@ And the Trello can be enjoyed [here](https://trello.com/b/RHuGRTJK/react-chess)
 Why is this important? Look at virtually every website with chess on it out there--just about each one of them uses chess.js and chessboard.js. I wanted to blaze my own trail on this one. 
 
 ### Unsolved Problems
-Socket.io is a beast. It's useful, and it's really cool when it works, but using websockets with React presents some strange difficulties. Many questions are raised by this combination--where should the connections be established? Where should the game itself be located? Where should state be maintained?
+As I implemented Socket.io, I realized that a better route to take would have been writing game logic and move-handling server side. Were I to start again with this project, I likely would have built out the sockets first, later implementing the game logic so that the sockets are not forced to fit around the already existing game logic. 
 
-Although I've had plenty of luck with the default mode of socket.io, the implementation of rooms (as well as a differentiation between local and connected games) has been a little too challenging. Fully implementing this feature is next on my list.
 ### Future Features
-With an app like this, the potential is endless. In addition to getting smoother socketing, I would love to add a timer feature to matched games, ensuring that players don't take too long in order to have wins. I would also like to persist player win-loss-draw records, as this could give the matched games a little extra weight.
+With an app like this, the potential is endless. I would love to add a timer feature to matched games, ensuring that players don't take too long in order to have wins. I would also like to persist player win-loss-draw records, as this could give the matched games a little extra weight.

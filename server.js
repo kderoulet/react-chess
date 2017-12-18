@@ -6,32 +6,39 @@ const favicon = require('favicon')
 require('dotenv').config();
 require('./config/db')
 
-const app = express();
-// const http = require('http').Server(app);
-// const io = require('socket.io')(http);
+var app = express();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-// socket.on('move', function(msg) {
-//     socket.broadcast.emit('move', msg);
-// });
+let user1
+let user2
+var roomno = 1;
+io.on('connection', function(socket) {
+   if (io.nsps['/'].adapter.rooms["room-"+roomno] && io.nsps['/'].adapter.rooms["room-"+roomno].length > 1) {
+    roomno++;
+   }
+   socket.join("room-"+roomno);
+   io.sockets.in("room-"+roomno).emit('connect-to-room', socket.id);
+   io.of('/').in("room-"+roomno).clients((error, clients) => {
+    if (error) throw error;
+    io.sockets.in("room-"+roomno).emit('users', clients)
+  });
+   socket.on('update', function(state) {
+       io.sockets.in("room-"+roomno).emit('update-game', state)
+   })
 
+   function getAllRoomMembers(room, _nsp) {
+    var roomMembers = [];
+    var nsp = (typeof _nsp !== 'string') ? '/' : _nsp;
+    for( var member in io.sockets.adapter.rooms[room] ) {
+        roomMembers.push(member);
+    }
+    return roomMembers;
+    }
 
-// var roomno = 1;
-// io.on('connection', function(socket) {
-//    if (io.nsps['/'].adapter.rooms["room-"+roomno] && io.nsps['/'].adapter.rooms["room-"+roomno].length > 1) {
-//     roomno++;
-//    }
-//    socket.join("room-"+roomno);
-   
-//    io.sockets.in("room-"+roomno).emit('connectToRoom', socket.id);
-//    socket.on('assign-players', function(white, black) {
-//     io.sockets.in("room-"+roomno).emit('start-game', white, black)
-//    })
-//    socket.on('update', function(state) {
-//        io.sockets.in("room-"+roomno).emit('update-game', state)
-//    })
-//    socket.on('disconnect', function () {
-//  });
-// })
+   socket.on('disconnect', function () {
+ });
+})
 
 
 app.use(logger('dev'));
@@ -47,6 +54,6 @@ app.get('/*', function(req, res) {
 
 var port = process.env.PORT || 3001;
 
-app.listen(port, function() {
+http.listen(port, function() {
  });
  
