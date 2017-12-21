@@ -8,8 +8,6 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import userService from './utils/userService';
 const io = require('socket.io-client');
-var white
-var black
 
 class App extends Component {
   constructor(props) {
@@ -86,8 +84,8 @@ class App extends Component {
         blackInCheck: false,
         gameOver: false,
         matchedGame: true,
-        white: white,
-        black: black      
+        white: null,
+        black: null      
     })
   }
 
@@ -2165,7 +2163,9 @@ class App extends Component {
   componentWillMount() {
     let user = userService.getUser();
     this.setState({user});
-    this.getInitialBoardState()    
+    this.getInitialBoardState()
+    this.runSockets();    
+    
   }
 
   render() {
@@ -2207,7 +2207,6 @@ class App extends Component {
               userService.getUser() ?
               <MatchedGame
                 runSockets={this.runSockets}
-                black={this.state.black}
                 getInitialBoardStateMatched={this.getInitialBoardStateMatched}
                 matchedGame={this.state.matchedGame}
                 handleSelection={this.handleSelection}

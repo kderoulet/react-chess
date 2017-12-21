@@ -6,19 +6,8 @@ import PromotionBox from '../components/PromotionBox'
 
 
 const MatchedGame = (props) => {
-    props.runSockets();
-    let pageDisplay1 = props.black ? "none" : "default";
-    let pageDisplay2 = props.black ? "default" : "none";
-
     return(
-        <div>
-            <div style={{display: pageDisplay1}}>
-                <span style={{fontSize: 40}}>Matchmaking</span>
-                <br/>
-                This might take a minute.
-                <br/>
-            </div>
-        <div style={{display: pageDisplay2}}className='row'>
+        <div className='row'>
             <div className='col-auto'>    
             <Link to='/' style={{fontSize: 20}}>Back</Link>
             <br/>                
@@ -49,7 +38,6 @@ const MatchedGame = (props) => {
                 />
             </div>
         </div>
-    </div>
     )
     
 }
