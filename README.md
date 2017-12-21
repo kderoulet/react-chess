@@ -31,6 +31,10 @@ And the Trello can be enjoyed [here](https://trello.com/b/RHuGRTJK/react-chess)
 
 Why is this important? Look at virtually every website with chess on it out there--just about each one of them uses chess.js and chessboard.js. I wanted to blaze my own trail on this one. 
 
+### Sockets in action
+
+![Socket Gif](https://media.giphy.com/media/3ohjUS3g4OBE4Qm3Ti/giphy.gif)
+
 ### Unsolved Problems
 As I implemented Socket.io, I realized that a better route to take would have been writing game logic and move-handling server side. Were I to start again with this project, I likely would have built out the sockets first, later implementing the game logic so that the sockets are not forced to fit around the already existing game logic. 
 
